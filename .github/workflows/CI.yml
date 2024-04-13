@@ -1,0 +1,74 @@
+name: CI
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  git-version:
+    runs-on: windows-latest
+    outputs:
+      SemVer: ${{ steps.gitversion.outputs.semVer }}
+      AssemblySemVer: ${{ steps.gitversion.outputs.AssemblySemVer }}
+      InformationalVersion: ${{ steps.gitversion.outputs.InformationalVersion }}
+      NuGetVersion: ${{ steps.gitversion.outputs.NuGetVersion }}
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-tags: 'true'
+        fetch-depth: 0
+        
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v1.1.1
+      with:
+        versionSpec: '5.x'
+        preferLatestVersion: true
+
+    - name: GitVersion Execute
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v1.1.1
+      with:
+        useConfigFile: true
+        configFilePath: 'GitVersion.yml'
+
+  build:
+    runs-on: windows-latest
+    needs: git-version
+    env:
+      SemVer: ${{ needs.git-version.outputs.SemVer }}
+      AssemblySemVer: ${{ needs.git-version.outputs.AssemblySemVer }}
+      InformationalVersion: ${{ needs.git-version.outputs.InformationalVersion }}
+      NuGetVersion: ${{ needs.git-version.outputs.NuGetVersion }}
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-tags: 'true'
+        fetch-depth: 0
+
+    - name: Display version
+      run: |
+        echo SemVer: ${{ env.SemVer }}
+        echo AssemblySemVer: ${{ env.AssemblySemVer }}
+        echo InformationalVersion: ${{ env.InformationalVersion }}
+        echo NuGetVersion: ${{ env.NuGetVersion }}
+
+    - name: Install .NET 8
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Install MAUI
+      run: dotnet workload install maui --source https://api.nuget.org/v3/index.json
+
+    ## Build
+    - name: Build
+      run: dotnet build ${{ github.workspace }}\Naveasy.sln --configuration Release /p:Version=${{ env.SemVer }} /p:AssemblyVersion=${{ env.AssemblySemVer }} /p:InformationalVersion=${{ env.InformationalVersion }}
+      
+    - name: Pack
+      run: dotnet pack Naveasy.sln --configuration release --no-build --output packages /p:PackageVersion=${{ env.NuGetVersion }}
+      #run: dotnet pack ${{ github.workspace }}/Naveasy/Naveasy.csproj --configuration Release --no-build --output . -p:PackageVersion={steps.gv.outputs.NuGetVersion}
+      
+    - name: Push
+      run: dotnet nuget push ${{ github.workspace }}\packages\Naveasy.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}

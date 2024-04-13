@@ -1,0 +1,1 @@
+global using NavigationMode = Naveasy.Navigation.NavigationMode;
