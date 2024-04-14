@@ -16,7 +16,7 @@ public interface INavigationService
 	Task<INavigationResult> GoBackToRootAsync(INavigationParameters parameters = null, bool? animated = null);
 	Task<INavigationResult> NavigateAsync<T>(INavigationParameters parameters = null, bool? animated = null);
 	Task<INavigationResult> NavigateAndPopPreviousAsync<T>(INavigationParameters parameters = null, bool? animated = null);
-	Task<INavigationResult> NavigateAndPopAllPreviousAsync<T>(INavigationParameters parameters = null, bool? animated = null);
+	Task<INavigationResult> NavigateAbsoluteAsync<T>(INavigationParameters parameters = null, bool? animated = null);
 }
 
 [Singleton]
@@ -172,7 +172,7 @@ public class NavigationService : INavigationService
 		}
 	}
 
-	public async Task<INavigationResult> NavigateAndPopAllPreviousAsync<T>(INavigationParameters parameters = null, bool? animated = null)
+	public async Task<INavigationResult> NavigateAbsoluteAsync<T>(INavigationParameters parameters = null, bool? animated = null)
 	{
 		var result = new NavigationResult();
 		try
