@@ -67,8 +67,9 @@ jobs:
       run: dotnet build ${{ github.workspace }}\Naveasy.sln --configuration Release /p:Version=${{ env.SemVer }} /p:AssemblyVersion=${{ env.AssemblySemVer }} /p:InformationalVersion=${{ env.InformationalVersion }}
       
     - name: Pack
-      run: dotnet pack Naveasy.sln --configuration release --no-build --output packages /p:PackageVersion=${{ env.NuGetVersion }}
+      run: dotnet pack ${{ github.workspace }}\Naveasy\Naveasy.csproj --configuration release --no-build --output packages /p:PackageVersion=${{ env.NuGetVersion }}
       #run: dotnet pack ${{ github.workspace }}/Naveasy/Naveasy.csproj --configuration Release --no-build --output . -p:PackageVersion={steps.gv.outputs.NuGetVersion}
       
     - name: Push
+      if: github.ref == 'refs/heads/main'
       run: dotnet nuget push ${{ github.workspace }}\packages\Naveasy.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
