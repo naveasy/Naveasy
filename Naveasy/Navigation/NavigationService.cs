@@ -25,8 +25,7 @@ public class NavigationService : INavigationService
 	private readonly IApplicationProvider _applicationProvider;
 	private readonly IPageFactory _pageFactory;
 
-	public NavigationService(IApplicationProvider applicationProvider,
-		IPageFactory pageFactory)
+	public NavigationService(IApplicationProvider applicationProvider, IPageFactory pageFactory)
 	{
 		_applicationProvider = applicationProvider;
 		_pageFactory = pageFactory;
