@@ -68,7 +68,6 @@ jobs:
       
     - name: Pack
       run: dotnet pack ${{ github.workspace }}\Naveasy\Naveasy.csproj --configuration release --no-build --output packages /p:PackageVersion=${{ env.NuGetVersion }}
-      #run: dotnet pack ${{ github.workspace }}/Naveasy/Naveasy.csproj --configuration Release --no-build --output . -p:PackageVersion={steps.gv.outputs.NuGetVersion}
       
     - name: Push
       if: github.ref == 'refs/heads/main'
