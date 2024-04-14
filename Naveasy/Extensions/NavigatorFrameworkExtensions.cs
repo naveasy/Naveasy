@@ -2,7 +2,7 @@ namespace Naveasy.Extensions;
 
 public static class NavigatorFrameworkExtensions
 {
-    public static MauiAppBuilder UseNavigator(this MauiAppBuilder builder)
+    public static MauiAppBuilder UseNaveasy(this MauiAppBuilder builder)
     {
         _ = new NavigatorFrameworkAppBuilder(builder);
         return builder;
