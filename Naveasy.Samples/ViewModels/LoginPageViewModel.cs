@@ -2,16 +2,16 @@
 using Microsoft.Extensions.Logging;
 using Naveasy.Navigation;
 using Naveasy.Samples.Models;
-using Naveasy.Samples.Views.Home;
+using Naveasy.Samples.Views;
 
-namespace Naveasy.Samples.Views.Login;
+namespace Naveasy.Samples.ViewModels;
 
-public class OtherPageViewModel : ViewModelBase
+public class LoginPageViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
-    private readonly ILogger<OtherPageViewModel> _logger;
+    private readonly ILogger<LoginPageViewModel> _logger;
 
-    public OtherPageViewModel(INavigationService navigationService, ILogger<OtherPageViewModel> logger)
+    public LoginPageViewModel(INavigationService navigationService, ILogger<LoginPageViewModel> logger)
     {
         _navigationService = navigationService;
         _logger = logger;

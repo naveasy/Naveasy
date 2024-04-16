@@ -1,18 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:products="clr-namespace:Naveasy.Samples.Views.Products"
-             x:Class="Naveasy.Samples.Views.Products.ProductsPage"
-             x:DataType="products:ProductsPageViewModel"
-             Title="Products">
+             xmlns:viewModels="clr-namespace:Naveasy.Samples.ViewModels"
+             x:Class="Naveasy.Samples.Views.DetailsPage"
+             x:DataType="viewModels:DetailsPageViewModel"
+             Title="Details">
     <ScrollView>
         <VerticalStackLayout Padding="30,0" Spacing="25">
-            <Label Text="Products"
+            <Label Text="Details"
                    Style="{StaticResource Headline}"
                    Margin="15"/>
 
             <Button Text="Details"
-                    Command="{Binding DetailsCommand}"
+                    Command="{Binding LogoutCommand}"
                     HorizontalOptions="Fill" />
         </VerticalStackLayout>
     </ScrollView>

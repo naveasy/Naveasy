@@ -1,4 +1,4 @@
-﻿namespace Naveasy.Samples.Views.Products;
+﻿namespace Naveasy.Samples.Views;
 
 public partial class ProductsPage : ContentPage
 {

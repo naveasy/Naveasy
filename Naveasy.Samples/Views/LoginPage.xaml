@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:login="clr-namespace:Naveasy.Samples.Views.Login"
-             x:Class="Naveasy.Samples.Views.Login.LoginPage"
-             x:DataType="login:LoginPageViewModel"
+             xmlns:viewModels="clr-namespace:Naveasy.Samples.ViewModels"
+             x:Class="Naveasy.Samples.Views.LoginPage"
+             x:DataType="viewModels:LoginPageViewModel"
              Title="Login">
     <ScrollView>
         <VerticalStackLayout Padding="30,0" Spacing="25">
