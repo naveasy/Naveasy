@@ -1,7 +1,13 @@
 # Naveasy
 
 This library is heavly based on the old [free and open sourced version PRISM library v8](https://github.com/PrismLibrary/Prism/releases/tag/DNF).
-It was adapted to work with .NET MAUI and will be kept FREE and open source.
+
+It was adapted to work with .NET MAUI and will be kept FREE and open source going forward.
+
+It it works with:
+- .NET MAUI
+- Microsoft.Extensions.DependencyInjection
+- MAUI NavigatonPage (No support for shell until MSFT 
 
 For now, to use it make sure all your views and view models follows the naming convention:
 - Your pages must be named: {whatever}Page
