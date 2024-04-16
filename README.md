@@ -7,7 +7,11 @@ It was adapted to work with .NET MAUI and will be kept FREE and open source goin
 It it works with:
 - .NET MAUI
 - Microsoft.Extensions.DependencyInjection
-- MAUI NavigatonPage (No support for shell until MSFT 
+- MAUI NavigatonPage. There's No support for MAUI AppShell until MSFT trully fixes the following issues:
+
+https://github.com/dotnet/maui/issues/7354
+https://github.com/dotnet/maui/issues/21814
+https://github.com/dotnet/maui/issues/21816
 
 For now, to use it make sure all your views and view models follows the naming convention:
 - Your pages must be named: {whatever}Page
