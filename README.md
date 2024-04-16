@@ -9,7 +9,7 @@ It it works with:
 - Microsoft.Extensions.DependencyInjection
 - MAUI NavigatonPage.
 
-Build [![CI](https://github.com/naveasy/Naveasy/actions/workflows/CI.yml/badge.svg)](https://github.com/naveasy/Naveasy/actions/workflows/CI.yml)
+[![Build](https://github.com/naveasy/Naveasy/actions/workflows/CI.yml/badge.svg)](https://github.com/naveasy/Naveasy/actions/workflows/CI.yml)
 
 ## Get Started
 
