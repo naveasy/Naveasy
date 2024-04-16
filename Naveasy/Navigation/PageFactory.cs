@@ -12,13 +12,10 @@ public interface IPageFactory
 public class PageFactory : IPageFactory
 {
     private readonly IPageScopeService _pageScopeService;
-    private readonly IPageRegistry _pageRegistry;
 
-    public PageFactory(IPageScopeService pageScopeService,
-        IPageRegistry pageRegistry)
+    public PageFactory(IPageScopeService pageScopeService)
     {
         _pageScopeService = pageScopeService;
-        _pageRegistry = pageRegistry;
     }
 
     public Page ResolvePage(Type viewModelType)
@@ -28,7 +25,7 @@ public class PageFactory : IPageFactory
         try
         {
             var vm = scope.ServiceProvider.GetRequiredService(viewModelType);
-            var viewType = _pageRegistry.ResolveViewType(viewModelType);
+            var viewType = PageRegistry.ResolveViewType(viewModelType);
             var view = scope.ServiceProvider.GetRequiredService(viewType);
 
             if (view is not Page page)

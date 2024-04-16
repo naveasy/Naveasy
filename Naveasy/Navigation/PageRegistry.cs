@@ -3,16 +3,18 @@ using Naveasy.Bootstrapping;
 
 namespace Naveasy.Navigation;
 
-public interface IPageRegistry
-{
-    Type ResolveViewType(Type viewModelType);
-}
-
 [Singleton]
-public class PageRegistry : IPageRegistry
+public static class PageRegistry
 {
-    public Type ResolveViewType(Type viewModelType)
+    private static readonly Dictionary<Type, Type> _pageDictionary = [];
+
+    public static Type ResolveViewType(Type viewModelType)
     {
+        if (_pageDictionary.TryGetValue(viewModelType, out var viewType))
+        {
+            return viewType;
+        }
+
         var vmTypeName = viewModelType.FullName;
 
         if (!vmTypeName!.EndsWith("ViewModel"))
@@ -28,5 +30,51 @@ public class PageRegistry : IPageRegistry
             throw new Exception($"ViewModel ${viewModelType} does not have a matching view ${viewTypeName} in the same assembly.");
 
         return result;
+    }
+
+    public static IServiceCollection AddTransientForNavigation<TView, TViewModel>(this IServiceCollection self) where TView : IView
+    {
+        var viewType = typeof(TView);
+        var viewModelType = typeof(TViewModel);
+
+        if (!_pageDictionary.TryAdd(viewModelType, viewType))
+        {
+            throw new ArgumentException($"The ViewModel {viewModelType.FullName} was already registered and cannot be registered twice.");
+        }
+
+        if (self.All(x => x.ServiceType != viewType))
+        {
+            self.AddTransient(viewType);
+        }
+
+        if (self.All(x => x.ServiceType != viewModelType))
+        {
+            self.AddTransient(viewModelType);
+        }
+
+        return self;
+    }
+
+    public static IServiceCollection AddScopedForNavigation<TView, TViewModel>(this IServiceCollection self) where TView : IView
+    {
+        var viewType = typeof(TView);
+        var viewModelType = typeof(TViewModel);
+
+        if (!_pageDictionary.TryAdd(viewModelType, viewType))
+        {
+            throw new ArgumentException($"The ViewModel {viewModelType.FullName} was already registered and cannot be registered twice.");
+        }
+
+        if (self.All(x => x.ServiceType != viewType))
+        {
+            self.AddScoped(viewType);
+        }
+
+        if (self.All(x => x.ServiceType != viewModelType))
+        {
+            self.AddScoped(viewModelType);
+        }
+
+        return self;
     }
 }
