@@ -2,28 +2,37 @@
 using Microsoft.Extensions.Logging;
 using Naveasy.Navigation;
 using Naveasy.Samples.Models;
-using Naveasy.Samples.Views.Details;
-using Naveasy.Samples.Views.Home;
+using Naveasy.Samples.Views;
 
-namespace Naveasy.Samples.Views.Products;
+namespace Naveasy.Samples.ViewModels;
 
-public class ProductsPageViewModel : ViewModelBase
+public class HomePageViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
-    private readonly ILogger<ProductsPageViewModel> _logger;
+    private readonly ILogger<HomePageViewModel> _logger;
 
-    public ProductsPageViewModel(INavigationService navigationService, ILogger<ProductsPageViewModel> logger)
+    public HomePageViewModel(INavigationService navigationService, ILogger<HomePageViewModel> logger)
     {
         _navigationService = navigationService;
         _logger = logger;
-        DetailsCommand = new Command(OnDetails);
+        ProductsCommand = new Command(OnProducts);
     }
 
-    public ICommand DetailsCommand { get; }
+    private string? _text;
+    public string? Text
+    {
+        get => _text;
+        set => SetProperty(ref _text, value);
+    }
+
+    public ICommand ProductsCommand { get; }
 
     public override void OnInitialize(INavigationParameters parameters)
     {
-        _logger.LogInformation($"Passed through {GetType().Name}.OnInitialize()");
+        var model = parameters.GetValue<ModelA>();
+        var id = parameters.GetValue<int>();
+
+        Text = $"{model.Name} {Environment.NewLine} id = {id} from navigation parameters.";
     }
 
     public override Task OnInitializeAsync(INavigationParameters parameters)
@@ -42,9 +51,9 @@ public class ProductsPageViewModel : ViewModelBase
         _logger.LogInformation($"Passed through {GetType().Name}.OnNavigatedTo()");
     }
 
-    private void OnDetails()
+    private void OnProducts()
     {
-        _navigationService.NavigateAsync<DetailsPageViewModel>();
+        _navigationService.NavigateAsync<ProductsPageViewModel>();
     }
 
     public override void Destroy()

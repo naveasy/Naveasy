@@ -1,24 +1,23 @@
 ﻿using System.Windows.Input;
 using Microsoft.Extensions.Logging;
 using Naveasy.Navigation;
-using Naveasy.Samples.Models;
-using Naveasy.Samples.Views.Home;
+using Naveasy.Samples.Views;
 
-namespace Naveasy.Samples.Views.Login;
+namespace Naveasy.Samples.ViewModels;
 
-public class LoginPageViewModel : ViewModelBase
+public class DetailsPageViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
-    private readonly ILogger<LoginPageViewModel> _logger;
+    private readonly ILogger<ProductsPageViewModel> _logger;
 
-    public LoginPageViewModel(INavigationService navigationService, ILogger<LoginPageViewModel> logger)
+    public DetailsPageViewModel(INavigationService navigationService, ILogger<ProductsPageViewModel> logger)
     {
         _navigationService = navigationService;
         _logger = logger;
-        LoginCommand = new Command(Login);
+        LogoutCommand = new Command(OnLogout);
     }
 
-    public ICommand LoginCommand { get; }
+    public ICommand LogoutCommand { get; }
 
     public override void OnInitialize(INavigationParameters parameters)
     {
@@ -41,17 +40,9 @@ public class LoginPageViewModel : ViewModelBase
         _logger.LogInformation($"Passed through {GetType().Name}.OnNavigatedTo()");
     }
 
-    private void Login()
+    private void OnLogout()
     {
-        var id = 1;
-        var model = new ModelA()
-        {
-            Name = "Parameter from Login Page"
-        };
-
-        var navigationParameters = id.ToNavigationParameter().Including(model);
-
-        _navigationService.NavigateAbsoluteAsync<HomePageViewModel>(navigationParameters);
+        _navigationService.NavigateAbsoluteAsync<LoginPageViewModel>();
     }
 
     public override void Destroy()

@@ -1,4 +1,4 @@
-namespace Naveasy.Samples.Views.Home;
+namespace Naveasy.Samples.Views;
 
 public partial class HomePage : ContentPage
 {

@@ -1,5 +1,5 @@
 ﻿using Naveasy.Navigation;
-using Naveasy.Samples.Views.Login;
+using Naveasy.Samples.ViewModels;
 
 namespace Naveasy.Samples
 {
