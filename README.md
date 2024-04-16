@@ -16,7 +16,7 @@ https://github.com/dotnet/maui/issues/21816
 For now, to use it make sure all your views and view models follows the naming convention:
 - Your pages must be named: {whatever}Page
 - Your view models must be named: {whatever}PageViewModel
-- Both page and VM MUST be on the same namespace.
+- Both page and view model MUST be on the same namespace.
 
 In the next release we're going to remove these naming convension requirements.
 
