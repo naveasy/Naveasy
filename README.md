@@ -1,6 +1,7 @@
 # Naveasy
 
-Naveasy was designed to help you to implement you .NET MAUI app in compliance with the MVVM principles.
+This library is heavly based on the source code of the NavigationService of the former free and open sourced version PRISM library v8.
+It was adapted to work with .NET MAUI and will be kept FREE and open source.
 
 For now, to use it make sure all your views and view models follows the naming convention:
 - Your pages must be named: {whatever}Page
