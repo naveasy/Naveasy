@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Naveasy.Extensions;
+using Naveasy.Navigation;
 using Naveasy.Samples.Views.Details;
 using Naveasy.Samples.Views.Home;
 using Naveasy.Samples.Views.Login;
@@ -22,17 +23,14 @@ namespace Naveasy.Samples
                 });
 
             builder.Services
-                .AddTransient<LoginPage>()
-                .AddTransient<LoginPageViewModel>()
-                .AddTransient<HomePage>()
-                .AddTransient<HomePageViewModel>()
-                .AddTransient<ProductsPage>()
-                .AddTransient<ProductsPageViewModel>()
-                .AddTransient<DetailsPage>()
-                .AddTransient<DetailsPageViewModel>();
+                .AddTransientForNavigation<LoginPage, LoginPageViewModel>()
+                .AddTransientForNavigation<LoginPage, OtherPageViewModel>()
+                .AddTransientForNavigation<HomePage, HomePageViewModel>()
+                .AddTransientForNavigation<ProductsPage, ProductsPageViewModel>()
+                .AddTransientForNavigation<DetailsPage, DetailsPageViewModel>();
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif
 
             return builder.Build();

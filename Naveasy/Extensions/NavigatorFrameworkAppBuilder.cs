@@ -46,8 +46,7 @@ public class NavigatorFrameworkAppBuilder
     {
         var serviceCollection = _mauiAppBuilder.Services;
 
-        serviceCollection.AddSingleton<IPageRegistry, PageRegistry>()
-            .AddSingleton<IPageFactory, PageFactory>()
+        serviceCollection.AddSingleton<IPageFactory, PageFactory>()
             .AddSingleton<IPageScopeService>(sp => new PageScopeService(sp.CreateScope()))
             .AddSingleton<INavigationService, NavigationService>()
             .AddSingleton<IApplicationProvider, ApplicationProvider>();
