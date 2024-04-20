@@ -88,4 +88,3 @@ https://github.com/dotnet/maui/issues/21814
 https://github.com/dotnet/maui/issues/21816
 
 This library was inpired on the Dotnet Foundation version of [PRISM](https://github.com/PrismLibrary/Prism/releases/tag/DNF).
-We evolved it make it to work with .NET MAUI and will be kept FREE and open source going forward.
