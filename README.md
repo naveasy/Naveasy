@@ -1,9 +1,4 @@
 # Naveasy
-
-This library is heavly based on the Dotnet Foundation version of [PRISM library](https://github.com/PrismLibrary/Prism/releases/tag/DNF).
-
-It was adapted to work with .NET MAUI and will be kept FREE and open source going forward.
-
 It it works with:
 - .NET MAUI
 - Microsoft.Extensions.DependencyInjection
@@ -91,3 +86,6 @@ There's No support for MAUI AppShell until MSFT trully fixes the following issue
 https://github.com/dotnet/maui/issues/7354
 https://github.com/dotnet/maui/issues/21814
 https://github.com/dotnet/maui/issues/21816
+
+This library was inpired on the Dotnet Foundation version of [PRISM](https://github.com/PrismLibrary/Prism/releases/tag/DNF).
+We evolved it make it to work with .NET MAUI and will be kept FREE and open source going forward.
