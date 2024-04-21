@@ -67,22 +67,40 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Views\DetailsPage.xaml.cs">
-	    <DependentUpon>DetailsPage.xaml</DependentUpon>
+	  <Compile Update="Views\HelpPage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\ProductsPage.xaml.cs">
-	    <DependentUpon>ProductsPage.xaml</DependentUpon>
+	  <Compile Update="Views\HomeContentPage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\HomeFlyoutPage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
 	  <Compile Update="Views\LoginPage.xaml.cs">
-	    <DependentUpon>LoginPage.xaml</DependentUpon>
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\ProductDetailsPage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\ProductsPage.xaml.cs">
+	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Views\HomePage.xaml">
+	  <MauiXaml Update="Views\HelpPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\DetailsPage.xaml">
+	  <MauiXaml Update="Views\HomeContentPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\HomeFlyoutPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\LoginPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\ProductDetailsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\ProductsPage.xaml">

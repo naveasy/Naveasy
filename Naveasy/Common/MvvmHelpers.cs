@@ -1,5 +1,5 @@
+using Naveasy.Core;
 using Naveasy.Extensions;
-using Naveasy.Navigation;
 
 namespace Naveasy.Common;
 

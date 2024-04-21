@@ -1,36 +1,36 @@
 ﻿using Microsoft.Extensions.Logging;
+using Naveasy.Core;
 using Naveasy.Extensions;
-using Naveasy.Navigation;
 using Naveasy.Samples.ViewModels;
 using Naveasy.Samples.Views;
 
-namespace Naveasy.Samples
+namespace Naveasy.Samples;
+public static class MauiProgram
 {
-    public static class MauiProgram
+    public static MauiApp CreateMauiApp()
     {
-        public static MauiApp CreateMauiApp()
-        {
-            var builder = MauiApp.CreateBuilder();
-            builder
-                .UseMauiApp<App>()
-                .UseNaveasy()
-                .ConfigureFonts(fonts =>
-                {
-                    fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                    fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-                });
+        var builder = MauiApp.CreateBuilder();
+        builder
+            .UseNaveasy()
+            .UseMauiApp<App>()
+            .ConfigureFonts(fonts =>
+            {
+                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
+                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
+            });
 
-            builder.Services
-                .AddTransientForNavigation<LoginPage, LoginPageViewModel>()
-                .AddTransientForNavigation<HomePage, HomePageViewModel>()
-                .AddTransientForNavigation<ProductsPage, ProductsPageViewModel>()
-                .AddTransientForNavigation<DetailsPage, DetailsPageViewModel>();
+        builder.Services
+            .AddTransientForNavigation<LoginPage, LoginPageViewModel>()
+            .AddTransientForNavigation<HomeContentPage, HomeContentPageViewModel>()
+            .AddTransientForNavigation<HomeFlyoutPage, HomeFlyoutPageViewModel>()
+            .AddTransientForNavigation<ProductsPage, ProductsPageViewModel>()
+            .AddTransientForNavigation<ProductDetailsPage, ProductDetailsPageViewModel>()
+            .AddTransientForNavigation<HelpPage, HelpPageViewModel>();
 
 #if DEBUG
-            builder.Logging.AddDebug();
+        builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
-        }
+        return builder.Build();
     }
 }

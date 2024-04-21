@@ -1,4 +1,4 @@
-using Naveasy.Navigation;
+using Naveasy.Core;
 
 namespace Naveasy.Extensions;
 

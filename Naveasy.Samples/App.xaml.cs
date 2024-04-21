@@ -1,16 +1,14 @@
-﻿using Naveasy.Navigation;
-using Naveasy.Samples.ViewModels;
+﻿using Naveasy.Samples.ViewModels;
 
-namespace Naveasy.Samples
+namespace Naveasy.Samples;
+
+public partial class App : Application
 {
-    public partial class App : Application
+    public App(INavigationService navigationService)
     {
-        public App(INavigationService navigationService)
-        {
-            InitializeComponent();
+        InitializeComponent();
 
-            MainPage = new NavigationPage();
-            navigationService.NavigateAsync<LoginPageViewModel>();
-        }
+        MainPage = new NavigationPage();
+        navigationService.NavigateAsync<LoginPageViewModel>();
     }
 }
