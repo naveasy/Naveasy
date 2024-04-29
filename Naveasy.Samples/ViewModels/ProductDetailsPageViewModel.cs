@@ -10,6 +10,7 @@ public class ProductDetailsPageViewModel : ViewModelBase
 
     public ProductDetailsPageViewModel(INavigationService navigationService, ILogger<ProductsPageViewModel> logger) : base(logger)
     {
+        Title = "Details";
         _navigationService = navigationService;
         LogoutCommand = new Command(OnLogout);
     }

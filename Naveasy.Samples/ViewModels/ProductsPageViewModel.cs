@@ -10,6 +10,7 @@ public class ProductsPageViewModel : ViewModelBase
 
     public ProductsPageViewModel(INavigationService navigationService, ILogger<ProductsPageViewModel> logger) : base(logger)
     {
+        Title = "Products";
         _navigationService = navigationService;
         DetailsCommand = new Command(OnDetails);
     }

@@ -4,6 +4,14 @@ namespace Naveasy.Samples.Views;
 
 public class ViewModelBase(ILogger logger) : BindableBase, IInitialize, IInitializeAsync, INavigatedAware, IDestructible
 {
+    private string? _title;
+
+    public string? Title
+    {
+        get => _title;
+        set => SetProperty(ref _title, value);
+    }
+
     public virtual void OnInitialize(INavigationParameters parameters)
     {
         logger.LogInformation($"{GetType().Name} Initialized");

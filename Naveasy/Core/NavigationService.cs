@@ -143,6 +143,18 @@ public class NavigationService : INavigationService
         return result;
     }
 
+    public async Task<INavigationResult> NavigateFlyoutAbsoluteAsync<TFlyoutViewModel, TDetailViewModel>(INavigationParameters flyoutParameters = null, INavigationParameters detailParameters = null, bool? animated = null)
+    {
+        CurrentNavigationSource = NavigationSource.NavigationService;
+
+        var processor = (IFlyoutPageNavigationProcessor)_pageNavigationProcessors.Single(x => x.CanHandle<TFlyoutViewModel>());
+
+        var result = await processor.NavigateFlyoutAbsoluteAsync<TFlyoutViewModel, TDetailViewModel>(flyoutParameters, detailParameters, animated);
+
+        CurrentNavigationSource = NavigationSource.System;
+        return result;
+    }
+
     private Task<Page> DoPop(INavigation navigation, bool animated)
     {
         return navigation.PopAsync(animated);

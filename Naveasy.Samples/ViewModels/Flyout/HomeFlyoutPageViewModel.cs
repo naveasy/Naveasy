@@ -3,7 +3,7 @@ using Microsoft.Extensions.Logging;
 using Naveasy.Samples.Models;
 using Naveasy.Samples.Views;
 
-namespace Naveasy.Samples.ViewModels;
+namespace Naveasy.Samples.ViewModels.Flyout;
 
 public class HomeFlyoutPageViewModel : ViewModelBase
 {
@@ -36,7 +36,18 @@ public class HomeFlyoutPageViewModel : ViewModelBase
 
     private void DoNavigate(string targetPage)
     {
-        _navigationService.NavigateAsync<ProductsPageViewModel>();
+        switch (targetPage)
+        {
+            case "PageA":
+                _navigationService.NavigateAsync<PageAViewModel>();
+                break;
+            case "PageB":
+                _navigationService.NavigateAsync<PageBViewModel>();
+                break;
+            case "PageC":
+                _navigationService.NavigateAsync<PageCViewModel>();
+                break;
+        }
     }
 
     private void SignOut()

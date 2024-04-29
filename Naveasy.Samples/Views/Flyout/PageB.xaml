@@ -1,0 +1,17 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="Naveasy.Samples.Views.Flyout.PageB"
+             x:DataType="flyout:PageBViewModel"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:flyout="clr-namespace:Naveasy.Samples.ViewModels.Flyout"
+             ControlTemplate="{StaticResource CustomPageTemplate}"
+             NavigationPage.HasNavigationBar="False">
+    <ScrollView>
+        <VerticalStackLayout Spacing="25"
+                             Padding="30,0">
+            <Label Text="Page B Content"
+                   Margin="15"
+                   Style="{StaticResource Headline}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

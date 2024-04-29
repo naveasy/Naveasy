@@ -67,17 +67,26 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\Flyout\CustomPageTemplate.xaml.cs">
+	    <DependentUpon>CustomPageTemplate.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\Flyout\PageC.xaml.cs">
+	    <DependentUpon>PageC.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\Flyout\PageB.xaml.cs">
+	    <DependentUpon>PageB.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\HelpPage.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\HomeContentPage.xaml.cs">
-	    <DependentUpon>%(Filename)</DependentUpon>
-	  </Compile>
-	  <Compile Update="Views\HomeFlyoutPage.xaml.cs">
+	  <Compile Update="Views\Flyout\HomeFlyoutPage.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
 	  </Compile>
 	  <Compile Update="Views\LoginPage.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\Flyout\PageA.xaml.cs">
+	    <DependentUpon>PageA.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Views\ProductDetailsPage.xaml.cs">
 	    <DependentUpon>%(Filename)</DependentUpon>
@@ -88,16 +97,25 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\Flyout\CustomPageTemplate.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Flyout\PageC.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Flyout\PageB.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\HelpPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\HomeContentPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\HomeFlyoutPage.xaml">
+	  <MauiXaml Update="Views\Flyout\HomeFlyoutPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\LoginPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Flyout\PageA.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\ProductDetailsPage.xaml">

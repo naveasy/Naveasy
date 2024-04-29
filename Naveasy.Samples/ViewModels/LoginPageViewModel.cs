@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Naveasy.Samples.Models;
+using Naveasy.Samples.ViewModels.Flyout;
 using Naveasy.Samples.Views;
 
 namespace Naveasy.Samples.ViewModels;
@@ -32,7 +33,7 @@ public class LoginPageViewModel : ViewModelBase
         }
         else
         {
-            _navigationService.NavigateAbsoluteAsync<HomeFlyoutPageViewModel>(navigationParameters);
+            _navigationService.NavigateFlyoutAbsoluteAsync<HomeFlyoutPageViewModel, ProductsPageViewModel>(navigationParameters);
         }
     }
 }

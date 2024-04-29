@@ -1,3 +1,4 @@
+using Microsoft.Extensions.Logging;
 using Naveasy.Extensions;
 
 namespace Naveasy.Core;
@@ -11,10 +12,12 @@ public interface IPageFactory
 public class PageFactory : IPageFactory
 {
     private readonly IPageScopeService _pageScopeService;
+    private readonly ILogger<PageFactory> _logger;
 
-    public PageFactory(IPageScopeService pageScopeService)
+    public PageFactory(IPageScopeService pageScopeService, ILogger<PageFactory> logger)
     {
         _pageScopeService = pageScopeService;
+        _logger = logger;
     }
 
     public Page ResolvePage(Type viewModelType)
@@ -39,7 +42,9 @@ public class PageFactory : IPageFactory
         }
         catch (Exception ex)
         {
-            throw new Exception($"Can't resolve a Page for viewModel: {viewModelType}", ex);
+            var errMessage = $"Unable to create a Page or ViewModel for {viewModelType}: {ex.Message}";
+            _logger?.LogError(ex, errMessage);
+            throw new Exception(errMessage, ex);
         }
     }
 
