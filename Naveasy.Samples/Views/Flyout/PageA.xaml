@@ -12,6 +12,8 @@
             <Label Text="Page A Content"
                    Margin="15"
                    Style="{StaticResource Headline}" />
+
+            <Button Command="{Binding ToggleFlyoutMenuCommand}" Text="Toggle FlyoutMenu"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

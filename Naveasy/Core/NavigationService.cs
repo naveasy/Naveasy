@@ -24,7 +24,6 @@ public class NavigationService : INavigationService
     }
 
     internal NavigationSource CurrentNavigationSource { get; private set; } = NavigationSource.System;
-
     public async Task<INavigationResult> GoBackAsync(INavigationParameters parameters = null, bool? animated = null)
     {
         Page page = null;

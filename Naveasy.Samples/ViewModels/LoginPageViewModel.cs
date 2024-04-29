@@ -33,7 +33,7 @@ public class LoginPageViewModel : ViewModelBase
         }
         else
         {
-            _navigationService.NavigateFlyoutAbsoluteAsync<HomeFlyoutPageViewModel, ProductsPageViewModel>(navigationParameters);
+            _navigationService.NavigateFlyoutAbsoluteAsync<HomeFlyoutPageViewModel, PageAViewModel>(navigationParameters);
         }
     }
 }
