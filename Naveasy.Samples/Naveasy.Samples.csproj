@@ -71,6 +71,9 @@
 	  <Compile Update="Views\Flyout\CustomPageTemplate.xaml.cs">
 	    <DependentUpon>CustomPageTemplate.xaml</DependentUpon>
 	  </Compile>
+	  <Compile Update="Views\Flyout\PageD.xaml.cs">
+	    <DependentUpon>PageD.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\Flyout\PageC.xaml.cs">
 	    <DependentUpon>PageC.xaml</DependentUpon>
 	  </Compile>
@@ -99,6 +102,9 @@
 
 	<ItemGroup>
 	  <MauiXaml Update="Views\Flyout\CustomPageTemplate.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Flyout\PageD.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\Flyout\PageC.xaml">

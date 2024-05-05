@@ -28,6 +28,7 @@ public class HomeContentPageViewModel : ViewModelBase
 
     public override void OnInitialize(INavigationParameters parameters)
     {
+        base.OnInitialize(parameters);
         var model = parameters.GetValue<ModelA>();
         var id = parameters.GetValue<int>();
 

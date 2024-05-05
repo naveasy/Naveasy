@@ -12,29 +12,31 @@ public class ViewModelBase(ILogger logger) : BindableBase, IInitialize, IInitial
         set => SetProperty(ref _title, value);
     }
 
+    private string PageName => GetType().Name.Replace("ViewModel", "");
+
     public virtual void OnInitialize(INavigationParameters parameters)
     {
-        logger.LogInformation($"{GetType().Name} Initialized");
+        logger.LogDebug($"{PageName} Initialized");
     }
 
     public virtual Task OnInitializeAsync(INavigationParameters parameters)
     {
-        logger.LogInformation($"{GetType().Name} InitializedAsync");
+        logger.LogDebug($"{PageName} InitializedAsync");
         return Task.CompletedTask;
     }
 
     public virtual void OnNavigatedFrom(INavigationParameters navigationParameters)
     {
-        logger.LogInformation($"{GetType().Name} NavigatedFrom");
+        logger.LogDebug($"{PageName} NavigatedFrom");
     }
 
     public virtual void OnNavigatedTo(INavigationParameters navigationParameters)
     {
-        logger.LogInformation($"{GetType().Name}NavigatedTo");
+        logger.LogDebug($"{PageName} NavigatedTo");
     }
 
     public virtual void Destroy()
     {
-        logger.LogInformation($"{GetType().Name} Destroyed");
+        logger.LogDebug($"{PageName} Destroyed");
     }
 }

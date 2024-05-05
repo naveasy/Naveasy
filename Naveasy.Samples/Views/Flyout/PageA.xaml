@@ -3,9 +3,7 @@
              x:DataType="flyout:PageAViewModel"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:flyout="clr-namespace:Naveasy.Samples.ViewModels.Flyout"
-             ControlTemplate="{StaticResource CustomPageTemplate}"
-             NavigationPage.HasNavigationBar="False">
+             xmlns:flyout="clr-namespace:Naveasy.Samples.ViewModels.Flyout">
     <ScrollView>
         <VerticalStackLayout Spacing="25"
                              Padding="30,0">
@@ -13,7 +11,7 @@
                    Margin="15"
                    Style="{StaticResource Headline}" />
 
-            <Button Command="{Binding ToggleFlyoutMenuCommand}" Text="Toggle FlyoutMenu"/>
+            <Button Command="{Binding NavigateCommand}" Text="Go B"/>
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

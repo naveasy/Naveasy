@@ -1,25 +1,24 @@
 ﻿using System.Windows.Input;
 using Microsoft.Extensions.Logging;
-using Naveasy.Samples.Services;
 using Naveasy.Samples.Views;
 
 namespace Naveasy.Samples.ViewModels.Flyout;
 
 public class PageAViewModel : ViewModelBase
 {
-    private readonly IFlyoutService _flyoutService;
+    private readonly INavigationService _navigationService;
 
-    public PageAViewModel(ILogger<PageAViewModel> logger, IFlyoutService flyoutService) : base(logger)
+    public PageAViewModel(ILogger<PageAViewModel> logger, INavigationService navigationService) : base(logger)
     {
-        _flyoutService = flyoutService;
+        _navigationService = navigationService;
         Title = "Page A";
-        ToggleFlyoutMenuCommand = new Command(ToggleFlyoutMenu);
+        NavigateCommand = new Command(Navigate);
     }
 
-    public ICommand ToggleFlyoutMenuCommand { get; }
+    public ICommand NavigateCommand { get; }
 
-    private void ToggleFlyoutMenu()
+    private void Navigate()
     {
-        _flyoutService.SetIsPresented(true);
+        _navigationService.NavigateAsync<PageBViewModel>();
     }
 }

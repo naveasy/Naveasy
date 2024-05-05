@@ -1,8 +1,6 @@
-﻿using System.Reactive.Disposables;
-using System.Windows.Input;
+﻿using System.Windows.Input;
 using Microsoft.Extensions.Logging;
 using Naveasy.Samples.Models;
-using Naveasy.Samples.Services;
 using Naveasy.Samples.Views;
 
 namespace Naveasy.Samples.ViewModels.Flyout;
@@ -10,22 +8,11 @@ namespace Naveasy.Samples.ViewModels.Flyout;
 public class HomeFlyoutPageViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
-    private readonly IFlyoutService _flyoutService;
-    private readonly CompositeDisposable _disposables = [];
 
-    public HomeFlyoutPageViewModel(INavigationService navigationService, IFlyoutService flyoutService, ILogger<HomeFlyoutPageViewModel> logger) : base(logger)
+    public HomeFlyoutPageViewModel(INavigationService navigationService, ILogger<HomeFlyoutPageViewModel> logger) : base(logger)
     {
         _navigationService = navigationService;
-        _flyoutService = flyoutService;
         NavigateCommand = new Command<string>(DoNavigate);
-        SignOutCommand = new Command(SignOut);
-
-        var subscription = _flyoutService.ObserveIsPresented.Subscribe(x =>
-        {
-            IsFlyoutPresented = x;
-        });
-
-        _disposables.Add(subscription);
     }
 
     private string? _text;
@@ -48,10 +35,11 @@ public class HomeFlyoutPageViewModel : ViewModelBase
     }
 
     public ICommand NavigateCommand { get; }
-    public ICommand SignOutCommand { get; }
 
     public override void OnInitialize(INavigationParameters parameters)
     {
+        base.OnInitialize(parameters);
+
         var model = parameters.GetValue<ModelA>();
         var id = parameters.GetValue<int>();
 
@@ -63,27 +51,20 @@ public class HomeFlyoutPageViewModel : ViewModelBase
         switch (targetPage)
         {
             case "PageA":
-                _navigationService.NavigateAsync<PageAViewModel>();
+                _navigationService.NavigateAsync<INavigationPage<PageAViewModel>>();
                 break;
             case "PageB":
-                _navigationService.NavigateAsync<PageBViewModel>();
+                _navigationService.NavigateAsync<INavigationPage<PageBViewModel>>();
                 break;
             case "PageC":
-                _navigationService.NavigateAsync<PageCViewModel>();
+                _navigationService.NavigateAsync<INavigationPage<PageCViewModel>>();
+                break;
+            case "PageD":
+                _navigationService.NavigateAsync<PageDViewModel>();
+                break;
+            case "SignOut":
+                _navigationService.NavigateAbsoluteAsync<LoginPageViewModel>();
                 break;
         }
-
-        _flyoutService.SetIsPresented(false);
-    }
-
-    private void SignOut()
-    {
-        _navigationService.NavigateAbsoluteAsync<LoginPageViewModel>();
-    }
-
-    public override void Destroy()
-    {
-        _disposables.Dispose();
-        base.Destroy();
     }
 }

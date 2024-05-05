@@ -31,8 +31,13 @@ public class NavigationService : INavigationService
         try
         {
             parameters ??= new NavigationParameters();
+            
             var navigation = _applicationProvider.Navigation;
-            page = _applicationProvider.MainPage is NavigationPage navPage ? navPage.CurrentPage : _applicationProvider.MainPage;
+
+            page = _applicationProvider.MainPage is NavigationPage navPage 
+                ? navPage.CurrentPage 
+                : _applicationProvider.MainPage;
+
             parameters.GetNavigationParametersInternal()
                 .Add(KnownInternalParameters.NavigationMode, NavigationMode.Back);
 
@@ -70,13 +75,17 @@ public class NavigationService : INavigationService
             parameters.GetNavigationParametersInternal()
                 .Add(KnownInternalParameters.NavigationMode, NavigationMode.Back);
 
-            var navigation = _applicationProvider.MainPage.Navigation;
+            var navigation = _applicationProvider.Navigation;
+
             var pagesToDestroy = navigation.NavigationStack.ToList();
+
             pagesToDestroy.Reverse();
             var root = pagesToDestroy.Last();
+
             pagesToDestroy.Remove(root);
 
             CurrentNavigationSource = NavigationSource.NavigationService;
+
             await navigation.PopToRootAsync(animated ?? true);
 
             foreach (var destroyPage in pagesToDestroy)
@@ -116,7 +125,7 @@ public class NavigationService : INavigationService
         {
             parameters ??= new NavigationParameters();
 
-            var navigation = _applicationProvider.MainPage.Navigation;
+            var navigation = _applicationProvider.Navigation;
             var pageToRemove = navigation.NavigationStack.LastOrDefault();
 
             var pageToNavigate = _pageFactory.ResolvePage(typeof(TViewModel));
@@ -168,7 +177,7 @@ public class NavigationService : INavigationService
 
             await navAction();
 
-            var navigation = _applicationProvider.MainPage.Navigation;
+            var navigation = _applicationProvider.Navigation;
             navigation.RemovePage(leavingPage);
             MvvmHelpers.OnNavigatedFrom(leavingPage, parameters);
 

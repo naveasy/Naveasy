@@ -7,6 +7,11 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
 {
     public bool CanHandle<TViewModel>()
     {
+        if (applicationProvider.MainPage is FlyoutPage)
+        {
+            return false;
+        }
+
         var viewType = pageFactory.ResolveViewType(typeof(TViewModel));
         var result = viewType.IsSubclassOf(typeof(ContentPage)) || viewType == typeof(ContentPage);
         return result;
@@ -18,7 +23,7 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
         {
             parameters ??= new NavigationParameters();
 
-            var navigation = applicationProvider.MainPage.Navigation;
+            var navigation = applicationProvider.Navigation;
             var leavingPage = navigation.NavigationStack.LastOrDefault();
 
             var pageToNavigate = pageFactory.ResolvePage(typeof(T));
@@ -45,7 +50,7 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
         {
             parameters ??= new NavigationParameters();
 
-            var navigation = applicationProvider.MainPage.Navigation;
+            var navigation = applicationProvider.Navigation;
             var pagesToRemove = navigation.NavigationStack.ToList();
 
             var pageToNavigate = pageFactory.ResolvePage(typeof(T));

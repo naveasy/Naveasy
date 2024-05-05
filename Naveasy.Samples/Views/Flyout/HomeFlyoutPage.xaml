@@ -3,27 +3,30 @@
             x:DataType="flyout:HomeFlyoutPageViewModel"
             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-            xmlns:viewModels="using:Naveasy.Samples.ViewModels"
             xmlns:flyout="clr-namespace:Naveasy.Samples.ViewModels.Flyout"
-            IsPresented="{Binding IsFlyoutPresented, Mode=TwoWay}"
-            FlyoutLayoutBehavior="Popover">
+            FlyoutLayoutBehavior="Popover"
+            IsPresented="{Binding IsFlyoutPresented, Mode=TwoWay}">
     <FlyoutPage.Flyout>
         <ContentPage x:DataType="flyout:HomeFlyoutPageViewModel"
                      Title="Menu"
                      BackgroundColor="{StaticResource Tertiary}">
             <StackLayout Spacing="20"
                          Margin="15">
-                <Button Text="Page A"
+                <!--<Button Text="Page A"
                         Command="{Binding NavigateCommand}"
-                        CommandParameter="PageA" />
+                        CommandParameter="PageA" />-->
                 <Button Text="Page B"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="PageB" />
                 <Button Text="Page C"
                         Command="{Binding NavigateCommand}"
                         CommandParameter="PageC" />
-                <Button Text="Sign out"
-                        Command="{Binding SignOutCommand}" />
+                <Button Text="Page D"
+                        Command="{Binding NavigateCommand}"
+                        CommandParameter="PageD" />
+                <Button Text="SignOut"
+                        Command="{Binding NavigateCommand}" 
+                        CommandParameter="SignOut"/>
             </StackLayout>
         </ContentPage>
     </FlyoutPage.Flyout>

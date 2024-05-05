@@ -32,10 +32,13 @@ public static class MauiProgram
             .AddTransientForNavigation<HelpPage, HelpPageViewModel>()
             .AddTransientForNavigation<PageA, PageAViewModel>()
             .AddTransientForNavigation<PageB, PageBViewModel>()
-            .AddTransientForNavigation<PageC, PageCViewModel>();
+            .AddTransientForNavigation<PageC, PageCViewModel>()
+            .AddTransientForNavigation<PageD, PageDViewModel>();
 
 #if DEBUG
-        builder.Logging.AddDebug();
+        builder.Logging
+            .SetMinimumLevel(LogLevel.Trace)
+            .AddDebug();
 #endif
 
         return builder.Build();
