@@ -1,7 +1,6 @@
 ﻿using Microsoft.Extensions.Logging;
 using Naveasy.Core;
 using Naveasy.Extensions;
-using Naveasy.Samples.Services;
 using Naveasy.Samples.ViewModels;
 using Naveasy.Samples.ViewModels.Flyout;
 using Naveasy.Samples.Views;
@@ -23,7 +22,6 @@ public static class MauiProgram
             });
 
         builder.Services
-            .AddSingleton<IFlyoutService, FlyoutService>()
             .AddTransientForNavigation<LoginPage, LoginPageViewModel>()
             .AddTransientForNavigation<HomeContentPage, HomeContentPageViewModel>()
             .AddTransientForNavigation<HomeFlyoutPage, HomeFlyoutPageViewModel>()

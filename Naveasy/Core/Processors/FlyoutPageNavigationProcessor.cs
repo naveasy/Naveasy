@@ -26,38 +26,48 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
         {
             parameters ??= new NavigationParameters();
 
-            var leavingPage = applicationProvider.Navigation.NavigationStack.LastOrDefault();
+            var flyoutPage = (FlyoutPage)applicationProvider.MainPage;
             var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
             var pageToNavigate = pageFactory.ResolvePage(viewModelType);
 
             await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
 
-            if (MvvmHelpers.IsINavigationPage<TViewModel>())
+            if (!flyoutPage.IsPresented && flyoutPage.Detail is NavigationPage detailNavigationPage)
             {
-                pageToNavigate = new NavigationPage(pageToNavigate);
-            }
-
-            if (applicationProvider.Navigation.NavigationStack.Count > 0)
-            {
-                await applicationProvider.Navigation.PushAsync(pageToNavigate);
-                MvvmHelpers.OnNavigatedFrom(leavingPage, parameters);
-            }
-            else if (applicationProvider.MainPage is FlyoutPage flyoutPage)
-            {
-                leavingPage = flyoutPage.Detail is NavigationPage leavingNavigationPage
+                var leavingPage = flyoutPage.Detail is NavigationPage leavingNavigationPage
                     ? leavingNavigationPage.CurrentPage
                     : flyoutPage.Detail;
 
-                if (flyoutPage.Detail is NavigationPage detailNavigationPage)
+                if (MvvmHelpers.IsINavigationPage<TViewModel>())
                 {
-                    await detailNavigationPage.Navigation.PushAsync(pageToNavigate);
+                    await detailNavigationPage.Navigation.PushAsync(new NavigationPage(pageToNavigate));
                 }
                 else
                 {
-                    flyoutPage.Detail = pageToNavigate;
+                    await detailNavigationPage.Navigation.PushAsync(pageToNavigate);
+                }
+                MvvmHelpers.OnNavigatedFrom(leavingPage, parameters);
+            }
+            else
+            {
+                var navigation = applicationProvider.Navigation;
+                var pagesToRemove = navigation.NavigationStack.Count > 0
+                    ? navigation.NavigationStack.ToList()
+                    : [applicationProvider.MainPage];
+
+                flyoutPage.Detail = MvvmHelpers.IsINavigationPage<TViewModel>() 
+                    ? new NavigationPage(pageToNavigate) 
+                    : pageToNavigate;
+
+                await navigation.PopToRootAsync(animated ?? true);
+
+                foreach (var destroyPage in pagesToRemove)
+                {
+                    MvvmHelpers.OnNavigatedFrom(destroyPage, parameters);
+                    MvvmHelpers.DestroyPage(destroyPage);
                 }
 
-                MvvmHelpers.OnNavigatedFrom(leavingPage, parameters);
+                flyoutPage.IsPresented = false;
             }
 
             parameters.GetNavigationParametersInternal().Add(KnownInternalParameters.NavigationMode, NavigationMode.New);
@@ -126,7 +136,7 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
 
             var navigation = applicationProvider.Navigation;
 
-            var pagesToRemove = applicationProvider.MainPage is NavigationPage 
+            var pagesToRemove = applicationProvider.MainPage is NavigationPage
                 ? navigation.NavigationStack.ToList()
                 : [applicationProvider.MainPage];
 
@@ -144,8 +154,8 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
             await MvvmHelpers.OnInitializedAsync(flyoutPage, flyoutParameters);
             await MvvmHelpers.OnInitializedAsync(detailPage, detailParameters);
 
-            flyout.Detail = MvvmHelpers.IsINavigationPage<TDetailViewModel>() 
-                ? new NavigationPage(detailPage) 
+            flyout.Detail = MvvmHelpers.IsINavigationPage<TDetailViewModel>()
+                ? new NavigationPage(detailPage)
                 : detailPage;
 
             Application.Current!.MainPage = flyoutPage;
