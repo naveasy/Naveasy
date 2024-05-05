@@ -8,7 +8,7 @@ public interface IApplicationProvider
 
 public class ApplicationProvider : IApplicationProvider
 {
-    public Page MainPage => Application.Current!.MainPage;
+    public Page MainPage => Application.Current?.MainPage;
 
     public INavigation Navigation => MainPage is FlyoutPage flyoutPage
         ? flyoutPage.Detail.Navigation

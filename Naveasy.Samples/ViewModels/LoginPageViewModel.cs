@@ -29,11 +29,11 @@ public class LoginPageViewModel : ViewModelBase
 
         if (parameter == "ContentPage")
         {
-            _navigationService.NavigateAbsoluteAsync<HomeContentPageViewModel>(navigationParameters);
+            _navigationService.NavigateAbsoluteAsync<INavigationPage<HomeContentPageViewModel>>(navigationParameters);
         }
         else
         {
-            _navigationService.NavigateFlyoutAbsoluteAsync<HomeFlyoutPageViewModel, PageAViewModel>(navigationParameters);
+            _navigationService.NavigateFlyoutAbsoluteAsync<HomeFlyoutPageViewModel, INavigationPage<PageAViewModel>>(navigationParameters);
         }
     }
 }

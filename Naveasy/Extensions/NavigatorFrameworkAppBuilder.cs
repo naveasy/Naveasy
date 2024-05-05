@@ -50,6 +50,7 @@ public class NavigatorFrameworkAppBuilder
             .AddSingleton<IApplicationProvider, ApplicationProvider>()
             .AddSingleton<IPageScopeService>(sp => new PageScopeService(sp.CreateScope()))
             .AddSingleton<INavigationService, NavigationService>()
+            .AddSingleton<IPageNavigationProcessor, RootPageNavigationProcessor>()
             .AddSingleton<IPageNavigationProcessor, NavigationPageNavigationProcessor>()
             .AddSingleton<IPageNavigationProcessor, FlyoutPageNavigationProcessor>()
             ;

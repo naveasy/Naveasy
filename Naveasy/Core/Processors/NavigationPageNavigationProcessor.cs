@@ -7,17 +7,17 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
 {
     public bool CanHandle<TViewModel>()
     {
-        if (applicationProvider.MainPage is FlyoutPage)
+        if (applicationProvider.MainPage == null || applicationProvider.MainPage is FlyoutPage)
         {
             return false;
         }
-
-        var viewType = pageFactory.ResolveViewType(typeof(TViewModel));
+        var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
+        var viewType = pageFactory.ResolveViewType(viewModelType);
         var result = viewType.IsSubclassOf(typeof(ContentPage)) || viewType == typeof(ContentPage);
         return result;
     }
 
-    public async Task<INavigationResult> NavigateAsync<T>(INavigationParameters parameters = null, bool? animated = null)
+    public async Task<INavigationResult> NavigateAsync<TViewModel>(INavigationParameters parameters = null, bool? animated = null)
     {
         try
         {
@@ -26,10 +26,19 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
             var navigation = applicationProvider.Navigation;
             var leavingPage = navigation.NavigationStack.LastOrDefault();
 
-            var pageToNavigate = pageFactory.ResolvePage(typeof(T));
+            var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
+            var pageToNavigate = pageFactory.ResolvePage(viewModelType);
 
             await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
-            await navigation.PushAsync(pageToNavigate);
+
+            if (MvvmHelpers.IsINavigationPage<TViewModel>())
+            {
+                await navigation.PushAsync(new NavigationPage(pageToNavigate));
+            }
+            else
+            {
+                await navigation.PushAsync(pageToNavigate);
+            }
 
             MvvmHelpers.OnNavigatedFrom(leavingPage, parameters);
 
@@ -44,23 +53,33 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
         }
     }
 
-    public async Task<INavigationResult> NavigateAbsoluteAsync<T>(INavigationParameters parameters = null, bool? animated = null)
+    public async Task<INavigationResult> NavigateAbsoluteAsync<TViewModel>(INavigationParameters parameters = null, bool? animated = null)
     {
         try
         {
             parameters ??= new NavigationParameters();
 
             var navigation = applicationProvider.Navigation;
-            var pagesToRemove = navigation.NavigationStack.ToList();
+            
+            var pagesToRemove = navigation.NavigationStack.Count > 0
+                ? navigation.NavigationStack.ToList()
+                : [applicationProvider.MainPage];
 
-            var pageToNavigate = pageFactory.ResolvePage(typeof(T));
+            pagesToRemove.Reverse();
+
+            var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
+            var pageToNavigate = pageFactory.ResolvePage(viewModelType);
 
             await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
-            await navigation.PushAsync(pageToNavigate);
+            
+            Application.Current!.MainPage = MvvmHelpers.IsINavigationPage<TViewModel>()
+                ? new NavigationPage(pageToNavigate)
+                : pageToNavigate;
+
+            await navigation.PopToRootAsync(animated ?? true);
 
             foreach (var destroyPage in pagesToRemove)
             {
-                navigation.RemovePage(destroyPage);
                 MvvmHelpers.OnNavigatedFrom(destroyPage, parameters);
                 MvvmHelpers.DestroyPage(destroyPage);
             }

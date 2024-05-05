@@ -8,6 +8,11 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
 {
     public bool CanHandle<TViewModel>()
     {
+        if (applicationProvider.MainPage == null)
+        {
+            return false;
+        }
+
         var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
         var viewType = pageFactory.ResolveViewType(viewModelType);
         var isTargetingFlyout = viewType.IsSubclassOf(typeof(FlyoutPage)) || viewType == typeof(FlyoutPage);
@@ -23,10 +28,14 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
 
             var leavingPage = applicationProvider.Navigation.NavigationStack.LastOrDefault();
             var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
-
             var pageToNavigate = pageFactory.ResolvePage(viewModelType);
 
             await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
+
+            if (MvvmHelpers.IsINavigationPage<TViewModel>())
+            {
+                pageToNavigate = new NavigationPage(pageToNavigate);
+            }
 
             if (applicationProvider.Navigation.NavigationStack.Count > 0)
             {
@@ -62,33 +71,34 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
         }
     }
 
-    public async Task<INavigationResult> NavigateAbsoluteAsync<T>(INavigationParameters parameters = null, bool? animated = null)
+    public async Task<INavigationResult> NavigateAbsoluteAsync<TViewModel>(INavigationParameters parameters = null, bool? animated = null)
     {
         try
         {
             parameters ??= new NavigationParameters();
 
             var navigation = applicationProvider.Navigation;
-            var pagesToRemove = navigation.NavigationStack.ToList();
-            var rootPageToRemove = pagesToRemove.FirstOrDefault();
+
+            var pagesToRemove = navigation.NavigationStack.Count > 0
+                ? navigation.NavigationStack.ToList()
+                : [applicationProvider.MainPage];
 
             pagesToRemove.Reverse();
 
             var flyoutPageToRemove = (FlyoutPage)applicationProvider.MainPage;
-
-            var pageToNavigate = pageFactory.ResolvePage(typeof(T));
+            var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
+            var pageToNavigate = pageFactory.ResolvePage(viewModelType);
 
             await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
 
-            Application.Current.MainPage = pageToNavigate;
+            Application.Current!.MainPage = MvvmHelpers.IsINavigationPage<TViewModel>()
+                ? new NavigationPage(pageToNavigate)
+                : pageToNavigate;
+
+            await navigation.PopToRootAsync(animated ?? true);
 
             foreach (var destroyPage in pagesToRemove)
             {
-                if (destroyPage != rootPageToRemove)
-                {
-                    navigation.RemovePage(destroyPage);
-                }
-
                 MvvmHelpers.OnNavigatedFrom(destroyPage, parameters);
                 MvvmHelpers.DestroyPage(destroyPage);
             }
@@ -115,34 +125,35 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
             detailParameters ??= new NavigationParameters();
 
             var navigation = applicationProvider.Navigation;
-            var pagesToRemove = navigation.NavigationStack.ToList();
+
+            var pagesToRemove = applicationProvider.MainPage is NavigationPage 
+                ? navigation.NavigationStack.ToList()
+                : [applicationProvider.MainPage];
+
+            pagesToRemove.Reverse();
 
             var flyoutPage = pageFactory.ResolvePage(typeof(TFlyoutViewModel));
-            var detailPage = pageFactory.ResolvePage(typeof(TDetailViewModel));
+            var detailsViewModelType = MvvmHelpers.GetINavigationPageGenericType<TDetailViewModel>();
+            var detailPage = pageFactory.ResolvePage(detailsViewModelType);
 
             if (flyoutPage is not FlyoutPage flyout)
             {
                 throw new InvalidCastException($"To navigate to a FlyoutPage your {flyoutPage.GetType().FullName} must inherit from {typeof(FlyoutPage).FullName}");
             }
 
-            flyout.Detail = new NavigationPage(detailPage);
-
             await MvvmHelpers.OnInitializedAsync(flyoutPage, flyoutParameters);
             await MvvmHelpers.OnInitializedAsync(detailPage, detailParameters);
 
+            flyout.Detail = MvvmHelpers.IsINavigationPage<TDetailViewModel>() 
+                ? new NavigationPage(detailPage) 
+                : detailPage;
+
             Application.Current!.MainPage = flyoutPage;
+
+            await navigation.PopToRootAsync(animated ?? true);
 
             foreach (var destroyPage in pagesToRemove)
             {
-                try
-                {
-                    navigation.RemovePage(destroyPage);
-                }
-                catch (Exception ex)
-                {
-                    logger.LogTrace($"Failed to remove {destroyPage.GetType().FullName} while navigation absolute to the flyout. But that's not a problem.");
-                }
-
                 MvvmHelpers.OnNavigatedFrom(destroyPage, flyoutParameters);
                 MvvmHelpers.DestroyPage(destroyPage);
             }
