@@ -1,13 +1,17 @@
-﻿using Naveasy.Common;
+﻿using Microsoft.Extensions.Logging;
+using Naveasy.Common;
 using Naveasy.Extensions;
 
 namespace Naveasy.Core.Processors;
 
-public class NavigationPageNavigationProcessor(IApplicationProvider applicationProvider, IPageFactory pageFactory) : IPageNavigationProcessor
+public class NavigationPageNavigationProcessor(IApplicationProvider applicationProvider, 
+                                               IPageFactory pageFactory, 
+                                               ILogger<NavigationPageNavigationProcessor> logger)
+    : IPageNavigationProcessor
 {
     public bool CanHandle<TViewModel>()
     {
-        if (applicationProvider.MainPage == null || applicationProvider.MainPage is FlyoutPage)
+        if (applicationProvider.MainPage is null or FlyoutPage)
         {
             return false;
         }
@@ -71,12 +75,11 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
             var pageToNavigate = pageFactory.ResolvePage(viewModelType);
 
             await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
-            
+
+
             Application.Current!.MainPage = MvvmHelpers.IsINavigationPage<TViewModel>()
                 ? new NavigationPage(pageToNavigate)
                 : pageToNavigate;
-
-            await navigation.PopToRootAsync(animated ?? true);
 
             foreach (var destroyPage in pagesToRemove)
             {

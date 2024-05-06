@@ -50,16 +50,13 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
             }
             else
             {
-                var navigation = applicationProvider.Navigation;
-                var pagesToRemove = navigation.NavigationStack.Count > 0
-                    ? navigation.NavigationStack.ToList()
-                    : [applicationProvider.MainPage];
+                var pagesToRemove = flyoutPage.Detail is NavigationPage leavingDetail
+                    ? leavingDetail.Navigation.NavigationStack.ToList()
+                    : [flyoutPage.Detail];
 
                 flyoutPage.Detail = MvvmHelpers.IsINavigationPage<TViewModel>() 
                     ? new NavigationPage(pageToNavigate) 
                     : pageToNavigate;
-
-                await navigation.PopToRootAsync(animated ?? true);
 
                 foreach (var destroyPage in pagesToRemove)
                 {
@@ -87,15 +84,15 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
         {
             parameters ??= new NavigationParameters();
 
-            var navigation = applicationProvider.Navigation;
-
-            var pagesToRemove = navigation.NavigationStack.Count > 0
-                ? navigation.NavigationStack.ToList()
-                : [applicationProvider.MainPage];
+            var flyoutPage = (FlyoutPage)applicationProvider.MainPage;
+            var leavingDetail = flyoutPage.Detail;
+            var pagesToRemove = leavingDetail.Navigation.NavigationStack.ToList();
+            //var pagesToRemove = navigation.NavigationStack.Count > 0
+            //    ? navigation.NavigationStack.ToList()
+            //    : [applicationProvider.MainPage];
 
             pagesToRemove.Reverse();
 
-            var flyoutPageToRemove = (FlyoutPage)applicationProvider.MainPage;
             var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
             var pageToNavigate = pageFactory.ResolvePage(viewModelType);
 
@@ -105,16 +102,14 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
                 ? new NavigationPage(pageToNavigate)
                 : pageToNavigate;
 
-            await navigation.PopToRootAsync(animated ?? true);
-
             foreach (var destroyPage in pagesToRemove)
             {
                 MvvmHelpers.OnNavigatedFrom(destroyPage, parameters);
                 MvvmHelpers.DestroyPage(destroyPage);
             }
 
-            MvvmHelpers.OnNavigatedFrom(flyoutPageToRemove.Detail, parameters);
-            MvvmHelpers.DestroyPage(flyoutPageToRemove.Detail);
+            MvvmHelpers.OnNavigatedFrom(leavingDetail, parameters);
+            MvvmHelpers.DestroyPage(leavingDetail);
 
             parameters.GetNavigationParametersInternal().Add(KnownInternalParameters.NavigationMode, NavigationMode.New);
             MvvmHelpers.OnNavigatedTo(pageToNavigate, parameters);
@@ -134,16 +129,14 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
             flyoutParameters ??= new NavigationParameters();
             detailParameters ??= new NavigationParameters();
 
-            var navigation = applicationProvider.Navigation;
-
-            var pagesToRemove = applicationProvider.MainPage is NavigationPage
-                ? navigation.NavigationStack.ToList()
+            var pagesToRemove = applicationProvider.MainPage is NavigationPage leavingNavigationPage
+                ? leavingNavigationPage.Navigation.NavigationStack.ToList()
                 : [applicationProvider.MainPage];
 
             pagesToRemove.Reverse();
 
-            var flyoutPage = pageFactory.ResolvePage(typeof(TFlyoutViewModel));
             var detailsViewModelType = MvvmHelpers.GetINavigationPageGenericType<TDetailViewModel>();
+            var flyoutPage = pageFactory.ResolvePage(typeof(TFlyoutViewModel));
             var detailPage = pageFactory.ResolvePage(detailsViewModelType);
 
             if (flyoutPage is not FlyoutPage flyout)
@@ -159,8 +152,6 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
                 : detailPage;
 
             Application.Current!.MainPage = flyoutPage;
-
-            await navigation.PopToRootAsync(animated ?? true);
 
             foreach (var destroyPage in pagesToRemove)
             {

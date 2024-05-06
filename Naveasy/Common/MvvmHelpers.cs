@@ -160,4 +160,17 @@ public static class MvvmHelpers
         var type = typeof(TViewModel);
         return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(INavigationPage<>);
     }
+
+    public static async Task PopLeavingPages(Page leavingPage, bool? animated = null)
+    {
+        switch (leavingPage)
+        {
+            case NavigationPage:
+                await leavingPage.Navigation.PopToRootAsync(animated ?? true);
+                break;
+            case FlyoutPage { Detail: NavigationPage detailNavigationPage }:
+                await detailNavigationPage.Navigation.PopToRootAsync(animated ?? true);
+                break;
+        }
+    }
 }

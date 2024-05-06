@@ -1,8 +1,8 @@
-﻿using Microsoft.Extensions.Logging;
+﻿using System.Windows.Input;
+using Microsoft.Extensions.Logging;
 using Naveasy.Samples.Views;
-using System.Windows.Input;
 
-namespace Naveasy.Samples.ViewModels.Flyout;
+namespace Naveasy.Samples.ViewModels;
 
 public class PageBViewModel : ViewModelBase
 {

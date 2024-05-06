@@ -1,18 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage x:Class="Naveasy.Samples.Views.Flyout.PageB"
-             x:DataType="flyout:PageBViewModel"
+<ContentPage x:Class="Naveasy.Samples.Views.Page2"
+             x:DataType="viewModels:Page2ViewModel"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:flyout="clr-namespace:Naveasy.Samples.ViewModels.Flyout">
+             xmlns:viewModels="using:Naveasy.Samples.ViewModels"
+             Title="{Binding Title}">
     <ScrollView>
         <VerticalStackLayout Spacing="25"
                              Padding="30,0">
-            <Label Text="Page B Content"
+            <Label Text="{Binding Title}"
                    Margin="15"
                    Style="{StaticResource Headline}" />
 
-            <Button Command="{Binding NavigateCommand}" Text="Go C"/>
-            <Button Command="{Binding BackCommand}" Text="Go Back"/>
+            <Button Text="Page A"
+                    Command="{Binding NavigateCommand}"
+                    HorizontalOptions="Fill" />
         </VerticalStackLayout>
     </ScrollView>
 </ContentPage>

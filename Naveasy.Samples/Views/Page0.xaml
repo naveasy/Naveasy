@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
-<ContentPage x:Class="Naveasy.Samples.Views.HomeContentPage"
-             x:DataType="viewModels:HomeContentPageViewModel"
+<ContentPage x:Class="Naveasy.Samples.Views.Page0"
+             x:DataType="viewModels:Page0ViewModel"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="using:Naveasy.Samples.ViewModels"
              Title="Home">
     <VerticalStackLayout Spacing="25"
                          Padding="30,0">
-        <Label Text="Home"
+        <Label Text="{Binding Title}"
                Margin="15"
                Style="{StaticResource Headline}" />
 
@@ -15,10 +15,10 @@
                VerticalOptions="Center"
                HorizontalOptions="Center"
                Margin="15"
-               TextColor="Red" />
+               TextColor="{StaticResource PrimaryTextColor}" />
 
-        <Button Text="Products"
-                Command="{Binding ProductsCommand}"
+        <Button Text="Page 1"
+                Command="{Binding NavigateCommand}"
                 HorizontalOptions="Fill" />
     </VerticalStackLayout>
 </ContentPage>

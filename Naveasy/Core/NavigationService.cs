@@ -34,6 +34,11 @@ public class NavigationService : INavigationService
             
             var navigation = _applicationProvider.Navigation;
 
+            if (navigation != null)
+            {
+                return new NavigationResult(new Exception($"Can't navigate back cause you're not on a NavigationPage"));
+            }
+
             page = _applicationProvider.MainPage is NavigationPage navPage 
                 ? navPage.CurrentPage 
                 : _applicationProvider.MainPage;
@@ -77,12 +82,25 @@ public class NavigationService : INavigationService
 
             var navigation = _applicationProvider.Navigation;
 
-            var pagesToDestroy = navigation.NavigationStack.ToList();
+            var pagesToDestroy = _applicationProvider.MainPage switch
+            {
+                NavigationPage x => x.Navigation.NavigationStack.ToList(),
+                FlyoutPage { Detail: NavigationPage x } => x.Navigation.NavigationStack.ToList(),
+                _ => null
+            };
 
-            pagesToDestroy.Reverse();
-            var root = pagesToDestroy.Last();
+            if (pagesToDestroy == null)
+            {
+                return new NavigationResult(new Exception("Unable to navigate out of a NavigationPage"));
+            }
 
-            pagesToDestroy.Remove(root);
+            var root = pagesToDestroy.FirstOrDefault();
+
+            if (pagesToDestroy.Any())
+            {
+                pagesToDestroy.Reverse();
+                pagesToDestroy.Remove(root);
+            }
 
             CurrentNavigationSource = NavigationSource.NavigationService;
 
@@ -94,7 +112,10 @@ public class NavigationService : INavigationService
                 MvvmHelpers.DestroyPage(destroyPage);
             }
 
-            MvvmHelpers.OnNavigatedTo(root, parameters);
+            if (root != null)
+            {
+                MvvmHelpers.OnNavigatedTo(root, parameters);
+            }
 
             return new NavigationResult(true);
         }

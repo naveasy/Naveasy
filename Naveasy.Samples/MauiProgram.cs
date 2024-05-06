@@ -2,9 +2,7 @@
 using Naveasy.Core;
 using Naveasy.Extensions;
 using Naveasy.Samples.ViewModels;
-using Naveasy.Samples.ViewModels.Flyout;
 using Naveasy.Samples.Views;
-using Naveasy.Samples.Views.Flyout;
 
 namespace Naveasy.Samples;
 public static class MauiProgram
@@ -23,11 +21,10 @@ public static class MauiProgram
 
         builder.Services
             .AddTransientForNavigation<LoginPage, LoginPageViewModel>()
-            .AddTransientForNavigation<HomeContentPage, HomeContentPageViewModel>()
-            .AddTransientForNavigation<HomeFlyoutPage, HomeFlyoutPageViewModel>()
-            .AddTransientForNavigation<ProductsPage, ProductsPageViewModel>()
-            .AddTransientForNavigation<ProductDetailsPage, ProductDetailsPageViewModel>()
-            .AddTransientForNavigation<HelpPage, HelpPageViewModel>()
+            .AddTransientForNavigation<MyFlyoutPage, MyFlyoutPageViewModel>()
+            .AddTransientForNavigation<Page0, Page0ViewModel>()
+            .AddTransientForNavigation<Page1, Page1ViewModel>()
+            .AddTransientForNavigation<Page2, Page2ViewModel>()
             .AddTransientForNavigation<PageA, PageAViewModel>()
             .AddTransientForNavigation<PageB, PageBViewModel>()
             .AddTransientForNavigation<PageC, PageCViewModel>()

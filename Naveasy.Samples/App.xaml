@@ -1,16 +1,13 @@
 ﻿<?xml version="1.0" encoding="UTF-8" ?>
 <Application x:Class="Naveasy.Samples.App"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
-             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:local="clr-namespace:Naveasy.Samples"
-             xmlns:flyout="clr-namespace:Naveasy.Samples.Views.Flyout">
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="Resources/Styles/Colors.xaml" />
                 <ResourceDictionary Source="Resources/Styles/Styles.xaml" />
             </ResourceDictionary.MergedDictionaries>
-            <flyout:CustomPageTemplate x:Key="CustomPageTemplate"/>
         </ResourceDictionary>
     </Application.Resources>
 </Application>

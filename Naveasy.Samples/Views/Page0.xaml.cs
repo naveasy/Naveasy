@@ -1,8 +1,8 @@
 namespace Naveasy.Samples.Views;
 
-public partial class HelpPage : ContentPage
+public partial class Page0 : ContentPage
 {
-	public HelpPage()
+	public Page0()
 	{
 		InitializeComponent();
 	}

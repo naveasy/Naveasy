@@ -1,4 +1,4 @@
-﻿namespace Naveasy.Samples.Views.Flyout;
+﻿namespace Naveasy.Samples.Views;
 
 public partial class PageC : ContentPage
 {

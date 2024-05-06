@@ -1,6 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Naveasy.Samples.Models;
-using Naveasy.Samples.ViewModels.Flyout;
 using Naveasy.Samples.Views;
 
 namespace Naveasy.Samples.ViewModels;
@@ -19,21 +18,22 @@ public class LoginPageViewModel : ViewModelBase
 
     private void Login(string parameter)
     {
-        var id = 1;
+        var primitive = 2.5d;
         var model = new ModelA()
         {
+            Id = 1,
             Name = "Parameter from Login Page"
         };
 
-        var navigationParameters = id.ToNavigationParameter().Including(model);
+        var navigationParameters = model.ToNavigationParameter().Including(primitive);
 
         if (parameter == "ContentPage")
         {
-            _navigationService.NavigateAbsoluteAsync<INavigationPage<HomeContentPageViewModel>>(navigationParameters);
+            _navigationService.NavigateAbsoluteAsync<INavigationPage<Page0ViewModel>>(navigationParameters);
         }
         else
         {
-            _navigationService.NavigateFlyoutAbsoluteAsync<HomeFlyoutPageViewModel, INavigationPage<PageAViewModel>>(navigationParameters);
+            _navigationService.NavigateFlyoutAbsoluteAsync<MyFlyoutPageViewModel, INavigationPage<PageAViewModel>>(navigationParameters);
         }
     }
 }

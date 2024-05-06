@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
-<ContentPage x:Class="Naveasy.Samples.Views.Flyout.PageA"
-             x:DataType="flyout:PageAViewModel"
+<ContentPage x:Class="Naveasy.Samples.Views.PageA"
+             x:DataType="viewModels:PageAViewModel"
              xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:flyout="clr-namespace:Naveasy.Samples.ViewModels.Flyout">
+             xmlns:viewModels="clr-namespace:Naveasy.Samples.ViewModels">
     <ScrollView>
         <VerticalStackLayout Spacing="25"
                              Padding="30,0">

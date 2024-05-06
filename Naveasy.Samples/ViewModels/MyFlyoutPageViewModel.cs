@@ -3,13 +3,13 @@ using Microsoft.Extensions.Logging;
 using Naveasy.Samples.Models;
 using Naveasy.Samples.Views;
 
-namespace Naveasy.Samples.ViewModels.Flyout;
+namespace Naveasy.Samples.ViewModels;
 
-public class HomeFlyoutPageViewModel : ViewModelBase
+public class MyFlyoutPageViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
 
-    public HomeFlyoutPageViewModel(INavigationService navigationService, ILogger<HomeFlyoutPageViewModel> logger) : base(logger)
+    public MyFlyoutPageViewModel(INavigationService navigationService, ILogger<MyFlyoutPageViewModel> logger) : base(logger)
     {
         _navigationService = navigationService;
         NavigateCommand = new Command<string>(DoNavigate);
@@ -61,6 +61,12 @@ public class HomeFlyoutPageViewModel : ViewModelBase
                 break;
             case "PageD":
                 _navigationService.NavigateAsync<PageDViewModel>();
+                break;
+            case "Page1":
+                _navigationService.NavigateAsync<Page1ViewModel>();
+                break;
+            case "Page2":
+                _navigationService.NavigateAsync<Page2ViewModel>();
                 break;
             case "SignOut":
                 _navigationService.NavigateAbsoluteAsync<LoginPageViewModel>();

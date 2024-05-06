@@ -2,16 +2,16 @@
 using Microsoft.Extensions.Logging;
 using Naveasy.Samples.Views;
 
-namespace Naveasy.Samples.ViewModels.Flyout;
+namespace Naveasy.Samples.ViewModels;
 
-public class PageAViewModel : ViewModelBase
+public class PageCViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
 
-    public PageAViewModel(ILogger<PageAViewModel> logger, INavigationService navigationService) : base(logger)
+    public PageCViewModel(ILogger<PageCViewModel> logger, INavigationService navigationService) : base(logger)
     {
         _navigationService = navigationService;
-        Title = "Page A";
+        Title = "Page C";
         NavigateCommand = new Command(Navigate);
     }
 
@@ -19,6 +19,6 @@ public class PageAViewModel : ViewModelBase
 
     private void Navigate()
     {
-        _navigationService.NavigateAsync<PageBViewModel>();
+        _navigationService.NavigateAsync<PageDViewModel>();
     }
 }
