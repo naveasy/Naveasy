@@ -1,5 +1,6 @@
 using Microsoft.Maui.LifecycleEvents;
-using Naveasy.Navigation;
+using Naveasy.Core;
+using Naveasy.Core.Processors;
 
 namespace Naveasy.Extensions;
 
@@ -44,11 +45,14 @@ public class NavigatorFrameworkAppBuilder
 
     private void RegisterServices()
     {
-        var serviceCollection = _mauiAppBuilder.Services;
-
-        serviceCollection.AddSingleton<IPageFactory, PageFactory>()
+        _mauiAppBuilder.Services
+            .AddSingleton<IPageFactory, PageFactory>()
+            .AddSingleton<IApplicationProvider, ApplicationProvider>()
             .AddSingleton<IPageScopeService>(sp => new PageScopeService(sp.CreateScope()))
             .AddSingleton<INavigationService, NavigationService>()
-            .AddSingleton<IApplicationProvider, ApplicationProvider>();
+            .AddSingleton<IPageNavigationProcessor, RootPageNavigationProcessor>()
+            .AddSingleton<IPageNavigationProcessor, NavigationPageNavigationProcessor>()
+            .AddSingleton<IPageNavigationProcessor, FlyoutPageNavigationProcessor>()
+            ;
     }
 }

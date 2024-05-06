@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="Naveasy.Samples.Views.PageD"
+             x:DataType="viewModels:PageDViewModel"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:Naveasy.Samples.ViewModels">
+    <ScrollView>
+        <VerticalStackLayout Spacing="25"
+                             Padding="30,0">
+            <Label Text="Page D Content"
+                   Margin="15"
+                   Style="{StaticResource Headline}" />
+
+            <Button Command="{Binding NavigateCommand}" Text="Back to Root"/>
+            <Button Command="{Binding SignOutCommand}" Text="Sign out"/>
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

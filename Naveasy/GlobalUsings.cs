@@ -1,1 +1,1 @@
-global using NavigationMode = Naveasy.Navigation.NavigationMode;
+global using NavigationMode = Naveasy.Core.NavigationMode;

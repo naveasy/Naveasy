@@ -3,6 +3,7 @@ It it works with:
 - .NET MAUI
 - Microsoft.Extensions.DependencyInjection
 - MAUI NavigatonPage.
+- MAUI FlyoutPage (check the samples to see how it works).
 
 [![Build](https://github.com/naveasy/Naveasy/actions/workflows/CI.yml/badge.svg)](https://github.com/naveasy/Naveasy/actions/workflows/CI.yml)
 
@@ -44,8 +45,6 @@ public partial class App : Application
     public App(INavigationService navigationService)
     {
         InitializeComponent();
-
-        MainPage = new NavigationPage();
         navigationService.NavigateAsync<LoginPageViewModel>();
     }
 }

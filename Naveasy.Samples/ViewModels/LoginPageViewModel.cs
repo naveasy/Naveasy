@@ -1,6 +1,4 @@
-﻿using System.Windows.Input;
-using Microsoft.Extensions.Logging;
-using Naveasy.Navigation;
+﻿using Microsoft.Extensions.Logging;
 using Naveasy.Samples.Models;
 using Naveasy.Samples.Views;
 
@@ -9,53 +7,33 @@ namespace Naveasy.Samples.ViewModels;
 public class LoginPageViewModel : ViewModelBase
 {
     private readonly INavigationService _navigationService;
-    private readonly ILogger<LoginPageViewModel> _logger;
 
-    public LoginPageViewModel(INavigationService navigationService, ILogger<LoginPageViewModel> logger)
+    public LoginPageViewModel(INavigationService navigationService, ILogger<LoginPageViewModel> logger) : base(logger)
     {
         _navigationService = navigationService;
-        _logger = logger;
-        LoginCommand = new Command(Login);
+        LoginCommand = new Command<string>(Login);
     }
 
-    public ICommand LoginCommand { get; }
+    public Command<string> LoginCommand { get; }
 
-    public override void OnInitialize(INavigationParameters parameters)
+    private void Login(string parameter)
     {
-        _logger.LogInformation($"Passed through {GetType().Name}.OnInitialize()");
-    }
-
-    public override Task OnInitializeAsync(INavigationParameters parameters)
-    {
-        _logger.LogInformation($"Passed through {GetType().Name}.OnInitializeAsync()");
-        return Task.CompletedTask;
-    }
-
-    public override void OnNavigatedFrom(INavigationParameters navigationParameters)
-    {
-        _logger.LogInformation($"Passed through {GetType().Name}.OnNavigatedFrom()");
-    }
-
-    public override void OnNavigatedTo(INavigationParameters navigationParameters)
-    {
-        _logger.LogInformation($"Passed through {GetType().Name}.OnNavigatedTo()");
-    }
-
-    private void Login()
-    {
-        var id = 1;
+        var primitive = 2.5d;
         var model = new ModelA()
         {
+            Id = 1,
             Name = "Parameter from Login Page"
         };
 
-        var navigationParameters = id.ToNavigationParameter().Including(model);
+        var navigationParameters = model.ToNavigationParameter().Including(primitive);
 
-        _navigationService.NavigateAbsoluteAsync<HomePageViewModel>(navigationParameters);
-    }
-
-    public override void Destroy()
-    {
-        _logger.LogInformation($"Passed through {GetType().Name}.Destroy()");
+        if (parameter == "ContentPage")
+        {
+            _navigationService.NavigateAbsoluteAsync<INavigationPage<Page0ViewModel>>(navigationParameters);
+        }
+        else
+        {
+            _navigationService.NavigateFlyoutAbsoluteAsync<MyFlyoutPageViewModel, INavigationPage<PageAViewModel>>(navigationParameters);
+        }
     }
 }

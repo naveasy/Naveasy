@@ -57,9 +57,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.20" />
-		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.20" />
+		<PackageReference Include="Microsoft.Maui.Controls" Version="8.0.21" />
+		<PackageReference Include="Microsoft.Maui.Controls.Compatibility" Version="8.0.21" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="8.0.0" />
+		<PackageReference Include="System.Reactive" Version="6.0.0" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -67,25 +68,58 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <Compile Update="Views\DetailsPage.xaml.cs">
-	    <DependentUpon>DetailsPage.xaml</DependentUpon>
+	  <Compile Update="Views\Page0.xaml.cs">
+	    <DependentUpon>Page0.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\ProductsPage.xaml.cs">
-	    <DependentUpon>ProductsPage.xaml</DependentUpon>
+	  <Compile Update="Views\PageD.xaml.cs">
+	    <DependentUpon>PageD.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\PageC.xaml.cs">
+	    <DependentUpon>PageC.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\PageB.xaml.cs">
+	    <DependentUpon>PageB.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\MyFlyoutPage.xaml.cs">
+	    <DependentUpon>MyFlyoutPage.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Views\LoginPage.xaml.cs">
-	    <DependentUpon>LoginPage.xaml</DependentUpon>
+	    <DependentUpon>%(Filename)</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\PageA.xaml.cs">
+	    <DependentUpon>PageA.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\Page2.xaml.cs">
+	    <DependentUpon>Page2.xaml</DependentUpon>
+	  </Compile>
+	  <Compile Update="Views\Page1.xaml.cs">
+	    <DependentUpon>Page1.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
-	  <MauiXaml Update="Views\HomePage.xaml">
+	  <MauiXaml Update="Views\PageD.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\DetailsPage.xaml">
+	  <MauiXaml Update="Views\PageC.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\ProductsPage.xaml">
+	  <MauiXaml Update="Views\PageB.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\MyFlyoutPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\LoginPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\PageA.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Page2.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
+	  <MauiXaml Update="Views\Page1.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

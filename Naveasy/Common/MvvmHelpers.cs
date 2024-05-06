@@ -1,11 +1,31 @@
+using Naveasy.Core;
 using Naveasy.Extensions;
-using Naveasy.Navigation;
 
 namespace Naveasy.Common;
 
 public static class MvvmHelpers
 {
-	private static void DestroyChildren(IView page)
+    public static void DestroyPage(IView view)
+    {
+        try
+        {
+            DestroyChildren(view);
+
+            InvokeViewAndViewModelAction<IDestructible>(view, v => v.Destroy());
+
+            if (view is Page page)
+            {
+                page.Behaviors?.Clear();
+                page.BindingContext = null;
+            }
+        }
+        catch (Exception ex)
+        {
+            throw new Exception($"Cannot destroy {view}.", ex);
+        }
+    }
+
+    private static void DestroyChildren(IView page)
 	{
 		switch (page)
 		{
@@ -74,26 +94,6 @@ public static class MvvmHelpers
 		await InvokeViewAndViewModelActionAsync<IInitializeAsync>(page, async v => await v.OnInitializeAsync(parameters));
 	}
 	
-	public static void DestroyPage(IView view)
-	{
-		try
-		{
-			DestroyChildren(view);
-
-			InvokeViewAndViewModelAction<IDestructible>(view, v => v.Destroy());
-
-			if(view is Page page)
-			{
-				page.Behaviors?.Clear();
-				page.BindingContext = null;
-			}
-		}
-		catch (Exception ex)
-		{
-			throw new Exception($"Cannot destroy {view}.", ex);
-		}
-	}
-	
 	public static void HandleSystemGoBack(IView previousPage, IView currentPage)
 	{
 		var parameters = new NavigationParameters();
@@ -147,4 +147,30 @@ public static class MvvmHelpers
 
 		return null;
 	}
+
+    public static Type GetINavigationPageGenericType<TViewModel>()
+    {
+        return IsINavigationPage<TViewModel>()
+            ? typeof(TViewModel).GetGenericArguments()[0]
+            : typeof(TViewModel);
+    }
+
+    public static bool IsINavigationPage<TViewModel>()
+    {
+        var type = typeof(TViewModel);
+        return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(INavigationPage<>);
+    }
+
+    public static async Task PopLeavingPages(Page leavingPage, bool? animated = null)
+    {
+        switch (leavingPage)
+        {
+            case NavigationPage:
+                await leavingPage.Navigation.PopToRootAsync(animated ?? true);
+                break;
+            case FlyoutPage { Detail: NavigationPage detailNavigationPage }:
+                await detailNavigationPage.Navigation.PopToRootAsync(animated ?? true);
+                break;
+        }
+    }
 }
