@@ -34,7 +34,7 @@ public class NavigationService : INavigationService
             
             var navigation = _applicationProvider.Navigation;
 
-            if (navigation != null)
+            if (navigation == null)
             {
                 return new NavigationResult(new Exception($"Can't navigate back cause you're not on a NavigationPage"));
             }
