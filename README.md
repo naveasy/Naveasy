@@ -13,7 +13,7 @@ It it works with:
 
 
 2) Add the following namespace to your MauiProgram.cs:  
-```using Naveasy.Navigation;```
+```using Naveasy;```
 
 3) Call `.UseNaveasy()` on your AppBuilder and then register your Views with it's corresponding ViewModels the your Service Collection by calling `AddTransientForNavigation` like described bellow.
 ```csharp
@@ -45,6 +45,11 @@ public partial class App : Application
     public App(INavigationService navigationService)
     {
         InitializeComponent();
+
+        //If you wanna navigate to page wraping it into a MAUI's NavigationPage use the Naveasy's generice interface INavgiationPage<YourPageViewModel> like in the example bellow.
+        navigationService.NavigateAsync<INavgiationPage<LoginPageViewModel>>();
+
+        //otherwise
         navigationService.NavigateAsync<LoginPageViewModel>();
     }
 }
