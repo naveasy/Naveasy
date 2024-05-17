@@ -46,8 +46,8 @@ public partial class App : Application
     {
         InitializeComponent();
 
-        //If you wanna navigate to page wraping it into a MAUI's NavigationPage use the Naveasy's generice interface
-        //INavgiationPage<YourPageViewModel> like in the example bellow.
+        //If you wanna navigate to page wraping it into a MAUI's NavigationPage use the Naveasy's
+        //generice interface INavgiationPage<YourPageViewModel> like in the example bellow.
         navigationService.NavigateAsync<INavgiationPage<LoginPageViewModel>>();
 
         //otherwise use it like this:
@@ -57,7 +57,7 @@ public partial class App : Application
 ```
 
 You can refer to the sample that we have here on this repo to have a more in depth understanding of how you can navigate from one page to another and also how to handle the various page lifecycle events.
-You can optionaly implement the following handy base class wich provides the various page lifecicle events that you would care about:
+You can optionaly implement the following handy base class which provides the various page lifecicle events that you would care about:
 
 ```csharp
 public class ViewModelBase : BindableBase, IInitialize, IInitializeAsync, INavigatedAware, IDestructible
