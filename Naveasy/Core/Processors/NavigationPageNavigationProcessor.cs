@@ -5,8 +5,7 @@ using Naveasy.Extensions;
 namespace Naveasy.Core.Processors;
 
 public class NavigationPageNavigationProcessor(IApplicationProvider applicationProvider, 
-                                               IPageFactory pageFactory, 
-                                               ILogger<NavigationPageNavigationProcessor> logger)
+                                               IPageFactory pageFactory)
     : IPageNavigationProcessor
 {
     public bool CanHandle<TViewModel>()
