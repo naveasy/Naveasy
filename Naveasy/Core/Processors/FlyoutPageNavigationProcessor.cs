@@ -50,18 +50,25 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
             }
             else
             {
-                var pagesToRemove = flyoutPage.Detail is NavigationPage leavingDetail
-                    ? leavingDetail.Navigation.NavigationStack.ToList()
-                    : [flyoutPage.Detail];
-
-                flyoutPage.Detail = MvvmHelpers.IsINavigationPage<TViewModel>() 
-                    ? new NavigationPage(pageToNavigate) 
-                    : pageToNavigate;
-
-                foreach (var destroyPage in pagesToRemove)
+                if (flyoutPage.Detail is NavigationPage navigationPage)
                 {
-                    MvvmHelpers.OnNavigatedFrom(destroyPage, parameters);
-                    MvvmHelpers.DestroyPage(destroyPage);
+                    await navigationPage.Navigation.PushAsync(pageToNavigate);
+                }
+                else
+                {
+                    var pagesToRemove = flyoutPage.Detail is NavigationPage leavingDetail
+                        ? leavingDetail.Navigation.NavigationStack.ToList()
+                        : [flyoutPage.Detail];
+
+                    flyoutPage.Detail = MvvmHelpers.IsINavigationPage<TViewModel>() 
+                        ? new NavigationPage(pageToNavigate) 
+                        : pageToNavigate;
+
+                    foreach (var destroyPage in pagesToRemove)
+                    {
+                        MvvmHelpers.OnNavigatedFrom(destroyPage, parameters);
+                        MvvmHelpers.DestroyPage(destroyPage);
+                    }
                 }
 
                 flyoutPage.IsPresented = false;
