@@ -32,7 +32,7 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
             var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
             var pageToNavigate = pageFactory.ResolvePage(viewModelType);
 
-            await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
+            await MvvmHelpers.OnInitializeAsync(pageToNavigate, parameters);
 
             if (MvvmHelpers.IsINavigationPage<TViewModel>())
             {
@@ -44,9 +44,10 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
             }
 
             MvvmHelpers.OnNavigatedFrom(leavingPage, parameters);
-
+            
+            await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
             parameters.GetNavigationParametersInternal().Add(KnownInternalParameters.NavigationMode, NavigationMode.New);
-            MvvmHelpers.OnNavigatedTo(pageToNavigate, parameters);
+            await MvvmHelpers.OnNavigatedTo(pageToNavigate, parameters);
 
             return new NavigationResult(true);
         }
@@ -73,7 +74,7 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
             var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
             var pageToNavigate = pageFactory.ResolvePage(viewModelType);
 
-            await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
+            await MvvmHelpers.OnInitializeAsync(pageToNavigate, parameters);
 
 
             Application.Current!.MainPage = MvvmHelpers.IsINavigationPage<TViewModel>()
@@ -85,9 +86,10 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
                 MvvmHelpers.OnNavigatedFrom(destroyPage, parameters);
                 MvvmHelpers.DestroyPage(destroyPage);
             }
-
+            
+            await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
             parameters.GetNavigationParametersInternal().Add(KnownInternalParameters.NavigationMode, NavigationMode.New);
-            MvvmHelpers.OnNavigatedTo(pageToNavigate, parameters);
+            await MvvmHelpers.OnNavigatedTo(pageToNavigate, parameters);
 
             return new NavigationResult(true);
         }

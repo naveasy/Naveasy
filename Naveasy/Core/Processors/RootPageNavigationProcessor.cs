@@ -20,14 +20,16 @@ public class RootPageNavigationProcessor(IApplicationProvider applicationProvide
             var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
             var pageToNavigate = pageFactory.ResolvePage(viewModelType);
 
-            await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
+            await MvvmHelpers.OnInitializeAsync(pageToNavigate, parameters);
 
             Application.Current!.MainPage = MvvmHelpers.IsINavigationPage<TViewModel>() 
                 ? new NavigationPage(pageToNavigate) 
                 : pageToNavigate;
 
             parameters.GetNavigationParametersInternal().Add(KnownInternalParameters.NavigationMode, NavigationMode.New);
-            MvvmHelpers.OnNavigatedTo(pageToNavigate, parameters);
+
+            await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
+            await MvvmHelpers.OnNavigatedTo(pageToNavigate, parameters);
 
             return new NavigationResult(true);
         }

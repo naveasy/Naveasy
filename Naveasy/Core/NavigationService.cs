@@ -194,7 +194,7 @@ public class NavigationService : INavigationService
         try
         {
             CurrentNavigationSource = NavigationSource.NavigationService;
-            await MvvmHelpers.OnInitializedAsync(page, parameters);
+            await MvvmHelpers.OnInitializeAsync(page, parameters);
 
             await navAction();
 
@@ -204,7 +204,9 @@ public class NavigationService : INavigationService
 
             parameters.GetNavigationParametersInternal()
                 .Add(KnownInternalParameters.NavigationMode, NavigationMode.New);
-            MvvmHelpers.OnNavigatedTo(page, parameters);
+            
+            await MvvmHelpers.OnInitializedAsync(page, parameters);
+            await MvvmHelpers.OnNavigatedTo(page, parameters);
         }
         finally
         {
