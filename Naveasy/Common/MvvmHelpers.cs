@@ -101,8 +101,8 @@ public static class MvvmHelpers
     {
         if (page is null) return;
         await Task.Delay(TimeSpan.FromMilliseconds(150));
-        InvokeViewAndViewModelAction<IInitialize>(page, v => v.OnInitialize(parameters));
-        await InvokeViewAndViewModelActionAsync<IInitializeAsync>(page, async v => await v.OnInitializeAsync(parameters));
+        InvokeViewAndViewModelAction<IInitialized>(page, v => v.OnInitialized(parameters));
+        await InvokeViewAndViewModelActionAsync<IInitializedAsync>(page, async v => await v.OnInitializedAsync(parameters));
     }
 	
 	public static async Task HandleSystemGoBack(IView previousPage, IView currentPage)
