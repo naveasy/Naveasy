@@ -64,7 +64,7 @@ jobs:
 
     ## Build
     - name: Build
-      run: dotnet build ${{ github.workspace }}\Naveasy.sln --configuration Release /p:Version=${{ env.SemVer }} /p:AssemblyVersion=${{ env.AssemblySemVer }} /p:InformationalVersion=${{ env.InformationalVersion }}
+      run: dotnet build ${{ github.workspace }}\Naveasy\Naveasy.csproj --configuration Release /p:Version=${{ env.SemVer }} /p:AssemblyVersion=${{ env.AssemblySemVer }} /p:InformationalVersion=${{ env.InformationalVersion }}
       
     - name: Pack
       run: dotnet pack ${{ github.workspace }}\Naveasy\Naveasy.csproj --configuration release --no-build --output packages /p:PackageVersion=${{ env.NuGetVersion }}
