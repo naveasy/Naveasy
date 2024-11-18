@@ -80,26 +80,37 @@ public static class MvvmHelpers
 			InvokeViewAndViewModelAction<INavigatedAware>(page, v => v.OnNavigatedFrom(parameters));
 	}
 	
-	public static void OnNavigatedTo(object page, INavigationParameters parameters)
+	public static async Task OnNavigatedTo(object page, INavigationParameters parameters)
 	{
-		if (page != null)
-			InvokeViewAndViewModelAction<INavigatedAware>(page, v => v.OnNavigatedTo(parameters));
+        if (page != null)
+        {
+            InvokeViewAndViewModelAction<INavigatedAware>(page, v => v.OnNavigatedTo(parameters));
+            await Task.Delay(TimeSpan.FromMilliseconds(150));
+        }
 	}
 	
-	public static async Task OnInitializedAsync(object page, INavigationParameters parameters)
+	public static async Task OnInitializeAsync(object page, INavigationParameters parameters)
 	{
 		if (page is null) return;
 
 		InvokeViewAndViewModelAction<IInitialize>(page, v => v.OnInitialize(parameters));
 		await InvokeViewAndViewModelActionAsync<IInitializeAsync>(page, async v => await v.OnInitializeAsync(parameters));
 	}
+
+    public static async Task OnInitializedAsync(object page, INavigationParameters parameters)
+    {
+        if (page is null) return;
+        await Task.Delay(TimeSpan.FromMilliseconds(150));
+        InvokeViewAndViewModelAction<IInitialized>(page, v => v.OnInitialized(parameters));
+        await InvokeViewAndViewModelActionAsync<IInitializedAsync>(page, async v => await v.OnInitializedAsync(parameters));
+    }
 	
-	public static void HandleSystemGoBack(IView previousPage, IView currentPage)
+	public static async Task HandleSystemGoBack(IView previousPage, IView currentPage)
 	{
 		var parameters = new NavigationParameters();
 		parameters.GetNavigationParametersInternal().Add(KnownInternalParameters.NavigationMode, NavigationMode.Back);
 		OnNavigatedFrom(previousPage, parameters);
-		OnNavigatedTo(GetOnNavigatedToTargetFromChild(currentPage), parameters);
+		await OnNavigatedTo(GetOnNavigatedToTargetFromChild(currentPage), parameters);
 		DestroyPage(previousPage);
 	}
 	

@@ -70,5 +70,5 @@ jobs:
       run: dotnet pack ${{ github.workspace }}\Naveasy\Naveasy.csproj --configuration release --no-build --output packages /p:PackageVersion=${{ env.NuGetVersion }}
       
     - name: Push
-      if: github.ref == 'refs/heads/main'
+      ##if: github.ref == 'refs/heads/main'
       run: dotnet nuget push ${{ github.workspace }}\packages\Naveasy.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}

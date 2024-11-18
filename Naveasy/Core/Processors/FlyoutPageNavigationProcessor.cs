@@ -30,7 +30,7 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
             var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
             var pageToNavigate = pageFactory.ResolvePage(viewModelType);
 
-            await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
+            await MvvmHelpers.OnInitializeAsync(pageToNavigate, parameters);
 
             if (!flyoutPage.IsPresented && flyoutPage.Detail is NavigationPage detailNavigationPage)
             {
@@ -74,8 +74,9 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
                 flyoutPage.IsPresented = false;
             }
 
+            await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
             parameters.GetNavigationParametersInternal().Add(KnownInternalParameters.NavigationMode, NavigationMode.New);
-            MvvmHelpers.OnNavigatedTo(pageToNavigate, parameters);
+            await MvvmHelpers.OnNavigatedTo(pageToNavigate, parameters);
 
             return new NavigationResult(true);
         }
@@ -103,7 +104,7 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
             var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
             var pageToNavigate = pageFactory.ResolvePage(viewModelType);
 
-            await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
+            await MvvmHelpers.OnInitializeAsync(pageToNavigate, parameters);
 
             Application.Current!.MainPage = MvvmHelpers.IsINavigationPage<TViewModel>()
                 ? new NavigationPage(pageToNavigate)
@@ -118,8 +119,9 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
             MvvmHelpers.OnNavigatedFrom(leavingDetail, parameters);
             MvvmHelpers.DestroyPage(leavingDetail);
 
+            await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
             parameters.GetNavigationParametersInternal().Add(KnownInternalParameters.NavigationMode, NavigationMode.New);
-            MvvmHelpers.OnNavigatedTo(pageToNavigate, parameters);
+            await MvvmHelpers.OnNavigatedTo(pageToNavigate, parameters);
 
             return new NavigationResult(true);
         }
@@ -151,8 +153,8 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
                 throw new InvalidCastException($"To navigate to a FlyoutPage your {flyoutPage.GetType().FullName} must inherit from {typeof(FlyoutPage).FullName}");
             }
 
-            await MvvmHelpers.OnInitializedAsync(flyoutPage, flyoutParameters);
-            await MvvmHelpers.OnInitializedAsync(detailPage, detailParameters);
+            await MvvmHelpers.OnInitializeAsync(flyoutPage, flyoutParameters);
+            await MvvmHelpers.OnInitializeAsync(detailPage, detailParameters);
 
             flyout.Detail = MvvmHelpers.IsINavigationPage<TDetailViewModel>()
                 ? new NavigationPage(detailPage)
@@ -169,8 +171,11 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
             flyoutParameters.GetNavigationParametersInternal().Add(KnownInternalParameters.NavigationMode, NavigationMode.New);
             detailParameters.GetNavigationParametersInternal().Add(KnownInternalParameters.NavigationMode, NavigationMode.New);
 
-            MvvmHelpers.OnNavigatedTo(flyoutPage, flyoutParameters);
-            MvvmHelpers.OnNavigatedTo(detailPage, detailParameters);
+            await MvvmHelpers.OnInitializedAsync(flyoutPage, flyoutParameters);
+            await MvvmHelpers.OnInitializedAsync(detailPage, detailParameters);
+
+            await MvvmHelpers.OnNavigatedTo(flyoutPage, flyoutParameters);
+            await MvvmHelpers.OnNavigatedTo(detailPage, detailParameters);
 
             return new NavigationResult(true);
         }
