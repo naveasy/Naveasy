@@ -54,10 +54,10 @@ jobs:
         echo InformationalVersion: ${{ env.InformationalVersion }}
         echo NuGetVersion: ${{ env.NuGetVersion }}
 
-    - name: Install .NET 8
+    - name: Install .NET 9
       uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0.x
+        dotnet-version: 9.0.x
 
     - name: Install MAUI
       run: dotnet workload install maui --source https://api.nuget.org/v3/index.json
