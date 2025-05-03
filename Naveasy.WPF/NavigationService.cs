@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel;
 using System.Windows;
-//using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Naveasy.WPF;
 
@@ -18,7 +18,7 @@ public interface IStartupNavigationService
     Window GetSingleWindow<TViewModel>(NavigationParameters? navigationParameters = null);
 }
 
-public class NavigationService(IWindowFactory windowFactory, IServiceProvider serviceProvider/*, ILogger<NavigationService> logger*/)
+public class NavigationService(IWindowFactory windowFactory, IServiceProvider serviceProvider, ILogger<NavigationService> logger)
     : INavigationService, IStartupNavigationService
 {
     private readonly Dictionary<string, Window> _singletonWindows = [];
@@ -150,13 +150,13 @@ public class NavigationService(IWindowFactory windowFactory, IServiceProvider se
             if (window.DataContext is IDisposable disposableViewModel)
             {
                 disposableViewModel.Dispose();
-                //logger.LogTrace("{ViewModelType} was disposed.", disposableViewModel.GetType().Name);
+                logger.LogTrace("{ViewModelType} was disposed.", disposableViewModel.GetType().Name);
             }
 
             if (window is IDisposable disposableWindow)
             {
                 disposableWindow.Dispose();
-                //logger.LogTrace("{ViewType} was disposed.", window.GetType().Name);
+                logger.LogTrace("{ViewType} was disposed.", window.GetType().Name);
             }
 
             if (_singletonWindows.ContainsKey(viewModelTypeName))

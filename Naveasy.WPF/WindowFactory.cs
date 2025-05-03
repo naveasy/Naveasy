@@ -1,5 +1,5 @@
 ﻿using System.Windows;
-//using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Naveasy.WPF;
 
@@ -9,7 +9,7 @@ public interface IWindowFactory
     Window CreateWindow(Type viewModelType);
 }
 
-public class WindowFactory(IServiceProvider serviceProvider/*, ILogger<WindowFactory> logger*/) : IWindowFactory
+public class WindowFactory(IServiceProvider serviceProvider, ILogger<WindowFactory> logger) : IWindowFactory
 {
     public Window CreateWindow<TViewModel>()
     {
@@ -29,8 +29,9 @@ public class WindowFactory(IServiceProvider serviceProvider/*, ILogger<WindowFac
         }
         catch (Exception exception)
         {
-            //logger.LogError(exception, "Could not resolve page or view model for view model type {ViewModelType}.", viewModelType.Name);
-            throw new Exception($"Could not resolve page or view model for view model type {viewModelType.Name}.", exception);
+            var errorMessage = $"Could not resolve page or view model for view model type {viewModelType.Name}.";
+            logger.LogError(exception, errorMessage);
+            throw new Exception(errorMessage, exception);
         }
     }
 }
