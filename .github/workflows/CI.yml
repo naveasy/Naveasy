@@ -62,7 +62,7 @@ jobs:
     - name: Install MAUI
       run: dotnet workload install maui --source https://api.nuget.org/v3/index.json
 
-    ## Build
+    ## Build for MAUI
     - name: Build
       run: dotnet build ${{ github.workspace }}\Naveasy\Naveasy.csproj --configuration Release /p:Version=${{ env.SemVer }} /p:AssemblyVersion=${{ env.AssemblySemVer }} /p:InformationalVersion=${{ env.InformationalVersion }}
       
@@ -72,3 +72,14 @@ jobs:
     - name: Push
       ##if: github.ref == 'refs/heads/main'
       run: dotnet nuget push ${{ github.workspace }}\packages\Naveasy.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+
+    ## Build for WPF
+    - name: Build
+      run: dotnet build ${{ github.workspace }}\Naveasy.WPF\Naveasy.WPF.csproj --configuration Release /p:Version=${{ env.SemVer }} /p:AssemblyVersion=${{ env.AssemblySemVer }} /p:InformationalVersion=${{ env.InformationalVersion }}
+      
+    - name: Pack
+      run: dotnet pack ${{ github.workspace }}\Naveasy.WPF\Naveasy.WPF.csproj --configuration release --no-build --output packages.wpf /p:PackageVersion=${{ env.NuGetVersion }}
+      
+    - name: Push
+      ##if: github.ref == 'refs/heads/main'
+      run: dotnet nuget push ${{ github.workspace }}\packages.wpf\Naveasy.WPF.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
