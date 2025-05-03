@@ -1,6 +1,6 @@
 <Project Sdk="Microsoft.NET.Sdk">
 	<PropertyGroup>
-		<TargetFrameworks>net481;net9.0-windows</TargetFrameworks>
+		<TargetFrameworks>net481;net9.0-windows;net8.0-windows;net7.0-windows;net6.0-windows</TargetFrameworks>
 		<LangVersion>preview</LangVersion>
 		<Nullable>enable</Nullable>
 		<UseWPF>true</UseWPF>
