@@ -32,7 +32,7 @@ jobs:
         useConfigFile: true
         configFilePath: 'GitVersion.yml'
 
-  build:
+  build-maui:
     runs-on: windows-latest
     needs: git-version
     env:
@@ -72,6 +72,33 @@ jobs:
     - name: Push
       ##if: github.ref == 'refs/heads/main'
       run: dotnet nuget push ${{ github.workspace }}\packages\Naveasy.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{ secrets.NUGET_API_KEY }}
+
+  build-wpf:
+    runs-on: windows-latest
+    needs: git-version
+    env:
+      SemVer: ${{ needs.git-version.outputs.SemVer }}
+      AssemblySemVer: ${{ needs.git-version.outputs.AssemblySemVer }}
+      InformationalVersion: ${{ needs.git-version.outputs.InformationalVersion }}
+      NuGetVersion: ${{ needs.git-version.outputs.NuGetVersion }}
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-tags: 'true'
+        fetch-depth: 0
+
+    - name: Display version
+      run: |
+        echo SemVer: ${{ env.SemVer }}
+        echo AssemblySemVer: ${{ env.AssemblySemVer }}
+        echo InformationalVersion: ${{ env.InformationalVersion }}
+        echo NuGetVersion: ${{ env.NuGetVersion }}
+
+    - name: Install .NET 9
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 9.0.x
 
     ## Build for WPF
     - name: Build
