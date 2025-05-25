@@ -53,6 +53,7 @@ public class NavigatorFrameworkAppBuilder
             .AddSingleton<IPageNavigationProcessor, RootPageNavigationProcessor>()
             .AddSingleton<IPageNavigationProcessor, NavigationPageNavigationProcessor>()
             .AddSingleton<IPageNavigationProcessor, FlyoutPageNavigationProcessor>()
+            .AddSingleton<IPageDialogService, PageDialogService>()
             ;
     }
 }
