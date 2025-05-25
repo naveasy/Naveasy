@@ -48,7 +48,7 @@ public partial class App : Application
 
         //If you wanna navigate to page wraping it into a MAUI's NavigationPage use the Naveasy's
         //generice interface INavgiationPage<YourPageViewModel> like in the example bellow.
-        navigationService.NavigateAsync<INavgiationPage<LoginPageViewModel>>();
+        navigationService.NavigateAsync<INavigationPage<LoginPageViewModel>>();
 
         //otherwise use it like this:
         //navigationService.NavigateAsync<LoginPageViewModel>();
