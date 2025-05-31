@@ -1,7 +1,4 @@
 ﻿using System.Text.Json;
-using System.Windows.Input;
-using Naveasy.Samples.Models;
-using Naveasy.Samples.Views.FeatureA;
 
 namespace Naveasy.Samples.Views.Feature3;
 

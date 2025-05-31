@@ -1,13 +1,4 @@
-﻿using System.Windows.Input;
-using Naveasy.Samples.Views.Feature1;
-using Naveasy.Samples.Views.Feature2;
-using Naveasy.Samples.Views.FeatureA;
-using Naveasy.Samples.Views.FeatureB;
-using Naveasy.Samples.Views.FeatureC;
-using Naveasy.Samples.Views.FeatureD;
-using Naveasy.Samples.Views.Login;
-
-namespace Naveasy.Samples.Views.Flyout;
+﻿namespace Naveasy.Samples.Views.Flyout;
 
 public class MyFlyoutPageViewModel : ViewModelBase
 {

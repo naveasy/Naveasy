@@ -1,5 +1,4 @@
 ﻿using Microsoft.Extensions.Logging;
-using Naveasy.Samples.Views.Login;
 
 namespace Naveasy.Samples.Views.Splash;
 

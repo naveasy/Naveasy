@@ -1,7 +1,4 @@
-﻿using System.Windows.Input;
-using Naveasy.Samples.Views.Login;
-
-namespace Naveasy.Samples.Views.FeatureD;
+﻿namespace Naveasy.Samples.Views.FeatureD;
 
 public class FeaturePageDViewModel : ViewModelBase
 {

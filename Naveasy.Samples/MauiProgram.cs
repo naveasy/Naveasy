@@ -1,16 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Naveasy.Core;
-using Naveasy.Samples.Views;
-using Naveasy.Samples.Views.Feature1;
-using Naveasy.Samples.Views.Feature2;
-using Naveasy.Samples.Views.Feature3;
-using Naveasy.Samples.Views.FeatureA;
-using Naveasy.Samples.Views.FeatureB;
-using Naveasy.Samples.Views.FeatureC;
-using Naveasy.Samples.Views.FeatureD;
-using Naveasy.Samples.Views.Flyout;
-using Naveasy.Samples.Views.Login;
-using Naveasy.Samples.Views.Splash;
 
 namespace Naveasy.Samples;
 public static class MauiProgram
@@ -19,8 +8,9 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
-            .UseNaveasy<SplashPageViewModel>()
             .UseMauiApp<App>()
+            .UseNaveasy<SplashPageViewModel>() //The generic type specified in builder.UseNaveasy<T>()
+                                               //will be used to create a new window and navigate to it SplashPageViewModel
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
@@ -39,11 +29,11 @@ public static class MauiProgram
             .AddTransientForNavigation<FeaturePageC, FeaturePageCViewModel>()
             .AddTransientForNavigation<FeaturePageD, FeaturePageDViewModel>();
 
-#if DEBUG
-        builder.Logging
-            .SetMinimumLevel(LogLevel.Trace)
-            .AddDebug();
-#endif
+        #if DEBUG
+            builder.Logging
+                .SetMinimumLevel(LogLevel.Trace)
+                .AddDebug();
+        #endif
 
         return builder.Build();
     }

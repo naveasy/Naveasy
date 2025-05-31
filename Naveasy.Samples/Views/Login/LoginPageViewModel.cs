@@ -1,8 +1,4 @@
-﻿using Naveasy.Samples.Views.Feature1;
-using Naveasy.Samples.Views.FeatureA;
-using Naveasy.Samples.Views.Flyout;
-
-namespace Naveasy.Samples.Views.Login;
+﻿namespace Naveasy.Samples.Views.Login;
 
 public class LoginPageViewModel : ViewModelBase
 {
