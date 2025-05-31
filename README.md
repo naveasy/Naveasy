@@ -94,7 +94,7 @@ public class ViewModelBase : BindableBase, IInitialize, IInitializeAsync, INavig
     {
     }
 
-    public virtual void Destroy()
+    public virtual void Dispose()
     {
     }
 }
