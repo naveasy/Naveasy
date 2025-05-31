@@ -1,6 +1,4 @@
-﻿using System.Text.Json;
-
-namespace Naveasy.Samples.Views.Feature3;
+﻿namespace Naveasy.Samples.Views.Feature3;
 
 public class MyPage3ViewModel : ViewModelBase
 {
@@ -13,23 +11,7 @@ public class MyPage3ViewModel : ViewModelBase
         NavigateCommand = new Command(Navigate);
     }
 
-    private string? _text;
-    public string? Text
-    {
-        get => _text;
-        set => SetProperty(ref _text, value);
-    }
-
     public ICommand NavigateCommand { get; }
-
-    public override void OnInitialize(INavigationParameters parameters)
-    {
-        base.OnInitialize(parameters);
-        var model = parameters.GetValue<ModelA>();
-        var primitive = parameters.GetValue<double>();
-
-        Text = $"Received from navigation parameters. \n\n primitive: {primitive} \n\nObject:\n{JsonSerializer.Serialize(model)}";
-    }
 
     private void Navigate()
     {

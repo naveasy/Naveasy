@@ -8,12 +8,16 @@
     <ScrollView>
         <VerticalStackLayout Spacing="25"
                              Padding="30,0">
-            <Label Text="Page D Content"
+            <Label Text="Page D"
                    Margin="15"
                    Style="{StaticResource Headline}" />
 
+            <Button Text="Back"
+                    Command="{Binding NavigateBackCommand}"
+                    BackgroundColor="SlateGrey" />
+
             <Button Text="Back to Root"
-                    Command="{Binding NavigateCommand}"
+                    Command="{Binding NavigateBackToRootCommand}"
                     BackgroundColor="Coral" />
             <Button Text="Sign out"
                     Command="{Binding SignOutCommand}"

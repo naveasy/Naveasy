@@ -12,6 +12,32 @@
                    Margin="15"
                    Style="{StaticResource Headline}" />
 
+
+
+            <Border BackgroundColor="CornflowerBlue"
+                    Padding="10">
+                <VerticalStackLayout>
+                    <Label Text="Client Information"
+                           FontAttributes="Bold"
+                           FontSize="13" />
+
+                    <Label Text="{Binding Client.Id}" />
+                    <Label Text="{Binding Client.Name}" />
+                </VerticalStackLayout>
+            </Border>
+
+            <Border BackgroundColor="LightSteelBlue"
+                    Padding="10">
+                <VerticalStackLayout>
+                    <Label Text="Product Information"
+                           FontAttributes="Bold"
+                           FontSize="13" />
+
+                    <Label Text="{Binding Product.Id}" />
+                    <Label Text="{Binding Product.Name}" />
+                </VerticalStackLayout>
+            </Border>
+
             <Button Text="Next"
                     Command="{Binding NavigateCommand}"
                     HorizontalOptions="Fill" />

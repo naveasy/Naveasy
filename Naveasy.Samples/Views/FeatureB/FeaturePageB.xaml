@@ -8,7 +8,7 @@
     <ScrollView>
         <VerticalStackLayout Spacing="25"
                              Padding="30,0">
-            <Label Text="Page B Content"
+            <Label Text="Page B"
                    Margin="15"
                    Style="{StaticResource Headline}" />
 
