@@ -18,8 +18,8 @@ It it works with:
 2) Add the following namespace to your MauiProgram.cs:  
 ```using Naveasy;```
 
-3) On your MauiAppBuilder add the invoke `.UseNaveasy<YourStartup_Page_VIEW_MODEL>()`;
-4) Register your Views and it's corresponding ViewModels on `builder.Services.AddTransientForNavigation<YourPage, YourViewModel>` like described bellow.
+3) On your MauiAppBuilder add the invoke `.UseNaveasy<YourStartup_Page_VIEW_MODEL>();`
+4) Register your `Page` and it's corresponding `PageViewModel` on `builder.Services.AddTransientForNavigation<Page, PageViewModel>` like described bellow.
 ```csharp
 using Microsoft.Extensions.Logging;
 using Naveasy.Core;
