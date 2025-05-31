@@ -1,16 +1,5 @@
 ﻿using Microsoft.Extensions.Logging;
 using Naveasy.Core;
-using Naveasy.Samples.Views;
-using Naveasy.Samples.Views.Feature1;
-using Naveasy.Samples.Views.Feature2;
-using Naveasy.Samples.Views.Feature3;
-using Naveasy.Samples.Views.FeatureA;
-using Naveasy.Samples.Views.FeatureB;
-using Naveasy.Samples.Views.FeatureC;
-using Naveasy.Samples.Views.FeatureD;
-using Naveasy.Samples.Views.Flyout;
-using Naveasy.Samples.Views.Login;
-using Naveasy.Samples.Views.Splash;
 
 namespace Naveasy.Samples;
 public static class MauiProgram
@@ -19,8 +8,11 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
-            .UseNaveasy<SplashPageViewModel>()
             .UseMauiApp<App>()
+
+            //The generic type specified here the line bellow builder.UseNaveasy<T>()
+            //will be used to create a new window and navigate to it SplashPageViewModel
+            .UseNaveasy<SplashPageViewModel>() 
             .ConfigureFonts(fonts =>
             {
                 fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");

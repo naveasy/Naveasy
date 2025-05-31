@@ -1,7 +1,4 @@
-﻿using System.Windows.Input;
-using Naveasy.Samples.Views.Feature2;
-
-namespace Naveasy.Samples.Views.Feature1;
+﻿namespace Naveasy.Samples.Views.Feature1;
 
 public class FeaturePage1ViewModel : ViewModelBase
 {
