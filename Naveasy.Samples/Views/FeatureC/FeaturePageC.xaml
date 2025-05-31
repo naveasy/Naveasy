@@ -1,0 +1,19 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="Naveasy.Samples.Views.FeaturePageC"
+             x:DataType="featureC:FeaturePageCViewModel"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:featureC="clr-namespace:Naveasy.Samples.Views.FeatureC"
+             Title="{Binding Title}">
+    <ScrollView>
+        <VerticalStackLayout Spacing="25"
+                             Padding="30,0">
+            <Label Text="Page C Content"
+                   Margin="15"
+                   Style="{StaticResource Headline}" />
+
+            <Button Text="Next"
+                    Command="{Binding NavigateCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

@@ -2,7 +2,7 @@
 
 namespace Naveasy.Samples.Views;
 
-public class ViewModelBase(ILogger logger) : BindableBase, IInitialize, IInitializeAsync, INavigatedAware, IDestructible
+public class ViewModelBase() : BindableBase, IInitialize, IInitializeAsync, INavigatedAware, IDisposable
 {
     private string? _title;
 
@@ -12,31 +12,31 @@ public class ViewModelBase(ILogger logger) : BindableBase, IInitialize, IInitial
         set => SetProperty(ref _title, value);
     }
 
-    private string PageName => GetType().Name.Replace("ViewModel", "");
+    public static ILogger Logger { get; set; }
 
     public virtual void OnInitialize(INavigationParameters parameters)
     {
-        logger.LogDebug($"{PageName} Initialized");
+        Logger.LogDebug($"Initialized {Title}");
     }
 
     public virtual Task OnInitializeAsync(INavigationParameters parameters)
     {
-        logger.LogDebug($"{PageName} InitializedAsync");
+        Logger.LogDebug($"InitializedAsync {Title}");
         return Task.CompletedTask;
     }
 
     public virtual void OnNavigatedFrom(INavigationParameters navigationParameters)
     {
-        logger.LogDebug($"{PageName} NavigatedFrom");
+        Logger.LogDebug($"NavigatedFrom {Title}");
     }
 
     public virtual void OnNavigatedTo(INavigationParameters navigationParameters)
     {
-        logger.LogDebug($"{PageName} NavigatedTo");
+        Logger.LogDebug($"NavigatedTo {Title}");
     }
 
-    public virtual void Destroy()
+    public virtual void Dispose()
     {
-        logger.LogDebug($"{PageName} Destroyed");
+        Logger.LogDebug($"Destroyed {Title}");
     }
 }

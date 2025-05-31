@@ -1,4 +1,5 @@
 using Naveasy.Common;
+using Naveasy.Core;
 
 namespace Naveasy.Behaviors;
 
@@ -18,6 +19,9 @@ public class NavigationPageSystemGoBackBehavior : BehaviorBase<NavigationPage>
 
     private void NavigationPage_Popped(object sender, NavigationEventArgs e)
     {
-        MvvmHelpers.HandleSystemGoBack(e.Page, AssociatedObject.CurrentPage);
+        if (NavigationService.CurrentNavigationSource == NavigationSource.System)
+        {
+            MvvmHelpers.HandleSystemGoBack(e.Page, AssociatedObject.CurrentPage).ConfigureAwait(false);
+        }
     }
 }

@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="Naveasy.Samples.Views.FeaturePageB"
+             x:DataType="featureB:FeaturePageBViewModel"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:featureB="clr-namespace:Naveasy.Samples.Views.FeatureB"
+             Title="{Binding Title}">
+    <ScrollView>
+        <VerticalStackLayout Spacing="25"
+                             Padding="30,0">
+            <Label Text="Page B Content"
+                   Margin="15"
+                   Style="{StaticResource Headline}" />
+
+            <Button Text="Next"
+                    Command="{Binding NavigateCommand}" />
+            <Button Text="Back"
+                    Command="{Binding BackCommand}"
+                    BackgroundColor="Coral" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>

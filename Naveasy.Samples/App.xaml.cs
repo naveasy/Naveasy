@@ -1,12 +1,9 @@
-﻿using Naveasy.Samples.ViewModels;
-
-namespace Naveasy.Samples;
+﻿namespace Naveasy.Samples;
 
 public partial class App : Application
 {
-    public App(INavigationService navigationService)
+    public App()
     {
         InitializeComponent();
-        navigationService.NavigateAsync<LoginPageViewModel>();
     }
 }
