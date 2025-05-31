@@ -23,7 +23,8 @@ public class NavigationService : INavigationService
         _pageNavigationProcessors = pageNavigationProcessors;
     }
 
-    internal NavigationSource CurrentNavigationSource { get; private set; } = NavigationSource.System;
+    internal static NavigationSource CurrentNavigationSource { get; private set; } = NavigationSource.System;
+
     public async Task<INavigationResult> GoBackAsync(INavigationParameters parameters = null, bool? animated = null)
     {
         Page page = null;
@@ -133,17 +134,23 @@ public class NavigationService : INavigationService
     {
         CurrentNavigationSource = NavigationSource.NavigationService;
 
-        var result = await _pageNavigationProcessors.Single(x => x.CanHandle<TViewModel>())
-                                                    .NavigateAsync<TViewModel>(parameters, animated);
-        
-        CurrentNavigationSource = NavigationSource.System;
-        return result;
+        try
+        {
+            var result = await _pageNavigationProcessors.Single(x => x.CanHandle<TViewModel>())
+                                                        .NavigateAsync<TViewModel>(parameters, animated);
+            return result;
+        }
+        finally
+        {
+            CurrentNavigationSource = NavigationSource.System;
+        }
     }
 
     public async Task<INavigationResult> NavigateAndPopPreviousAsync<TViewModel>(INavigationParameters parameters = null, bool? animated = null)
     {
         try
         {
+            CurrentNavigationSource = NavigationSource.NavigationService;
             parameters ??= new NavigationParameters();
 
             var navigation = _applicationProvider.Navigation;
@@ -159,17 +166,27 @@ public class NavigationService : INavigationService
         {
             return new NavigationResult(ex);
         }
+        finally
+        {
+            CurrentNavigationSource = NavigationSource.System;
+        }
     }
 
     public async Task<INavigationResult> NavigateAbsoluteAsync<TViewModel>(INavigationParameters parameters = null, bool? animated = null)
     {
         CurrentNavigationSource = NavigationSource.NavigationService;
 
-        var result = await _pageNavigationProcessors.Single(x => x.CanHandle<TViewModel>())
-                                                    .NavigateAbsoluteAsync<TViewModel>(parameters, animated);
+        try
+        {
+            var result = await _pageNavigationProcessors.Single(x => x.CanHandle<TViewModel>())
+                                                        .NavigateAbsoluteAsync<TViewModel>(parameters, animated);
 
-        CurrentNavigationSource = NavigationSource.System;
-        return result;
+            return result;
+        }
+        finally
+        {
+            CurrentNavigationSource = NavigationSource.System;
+        }
     }
 
     public async Task<INavigationResult> NavigateFlyoutAbsoluteAsync<TFlyoutViewModel, TDetailViewModel>(INavigationParameters flyoutParameters = null, INavigationParameters detailParameters = null, bool? animated = null)

@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<FlyoutPage x:Class="Naveasy.Samples.Views.MyFlyoutPage"
+            x:DataType="flyout:MyFlyoutPageViewModel"
+            xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:flyout="clr-namespace:Naveasy.Samples.Views.Flyout"
+            FlyoutLayoutBehavior="Popover"
+            IsPresented="{Binding IsFlyoutPresented, Mode=TwoWay}">
+    <FlyoutPage.Flyout>
+        <ContentPage x:DataType="flyout:MyFlyoutPageViewModel"
+                     x:Name="FlyoutMenu"
+                     Title="Menu"
+                     BackgroundColor="{StaticResource Tertiary}">
+            <ScrollView>
+                <StackLayout Spacing="20"
+                             Margin="15">
+                    <Button Text="Page A"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="FeaturePageA" />
+                    <Button Text="Page B"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="FeaturePageB" />
+                    <Button Text="Page C"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="FeaturePageC" />
+                    <Button Text="Page D"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="FeaturePageD" />
+                    <Button Text="Page 1"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="FeaturePage1" />
+                    <Button Text="Page 2"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="FeaturePage2" />
+                    <Button Text="SignOut"
+                            Command="{Binding NavigateCommand}"
+                            CommandParameter="SignOut" />
+                </StackLayout>
+            </ScrollView>
+        </ContentPage>
+    </FlyoutPage.Flyout>
+</FlyoutPage>

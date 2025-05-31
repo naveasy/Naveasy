@@ -1,8 +1,16 @@
 ﻿using Microsoft.Extensions.Logging;
 using Naveasy.Core;
-using Naveasy.Extensions;
-using Naveasy.Samples.ViewModels;
 using Naveasy.Samples.Views;
+using Naveasy.Samples.Views.Feature1;
+using Naveasy.Samples.Views.Feature2;
+using Naveasy.Samples.Views.Feature3;
+using Naveasy.Samples.Views.FeatureA;
+using Naveasy.Samples.Views.FeatureB;
+using Naveasy.Samples.Views.FeatureC;
+using Naveasy.Samples.Views.FeatureD;
+using Naveasy.Samples.Views.Flyout;
+using Naveasy.Samples.Views.Login;
+using Naveasy.Samples.Views.Splash;
 
 namespace Naveasy.Samples;
 public static class MauiProgram
@@ -11,7 +19,7 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder();
         builder
-            .UseNaveasy()
+            .UseNaveasy<SplashPageViewModel>()
             .UseMauiApp<App>()
             .ConfigureFonts(fonts =>
             {
@@ -20,15 +28,16 @@ public static class MauiProgram
             });
 
         builder.Services
+            .AddTransientForNavigation<SplashPage, SplashPageViewModel>()
             .AddTransientForNavigation<LoginPage, LoginPageViewModel>()
             .AddTransientForNavigation<MyFlyoutPage, MyFlyoutPageViewModel>()
-            .AddTransientForNavigation<Page0, Page0ViewModel>()
-            .AddTransientForNavigation<Page1, Page1ViewModel>()
-            .AddTransientForNavigation<Page2, Page2ViewModel>()
-            .AddTransientForNavigation<PageA, PageAViewModel>()
-            .AddTransientForNavigation<PageB, PageBViewModel>()
-            .AddTransientForNavigation<PageC, PageCViewModel>()
-            .AddTransientForNavigation<PageD, PageDViewModel>();
+            .AddTransientForNavigation<FeaturePage3, MyPage3ViewModel>()
+            .AddTransientForNavigation<FeaturePage1, FeaturePage1ViewModel>()
+            .AddTransientForNavigation<FeaturePage2, FeaturePage2ViewModel>()
+            .AddTransientForNavigation<FeaturePageA, FeaturePageAViewModel>()
+            .AddTransientForNavigation<FeaturePageB, FeaturePageBViewModel>()
+            .AddTransientForNavigation<FeaturePageC, FeaturePageCViewModel>()
+            .AddTransientForNavigation<FeaturePageD, FeaturePageDViewModel>();
 
 #if DEBUG
         builder.Logging

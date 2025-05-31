@@ -5,7 +5,8 @@ using Naveasy.Extensions;
 namespace Naveasy.Core.Processors;
 
 public class NavigationPageNavigationProcessor(IApplicationProvider applicationProvider, 
-                                               IPageFactory pageFactory)
+                                               IPageFactory pageFactory, 
+                                               ILogger<NavigationPageNavigationProcessor> logger) 
     : IPageNavigationProcessor
 {
     public bool CanHandle<TViewModel>()
@@ -14,8 +15,7 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
         {
             return false;
         }
-        var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
-        var viewType = pageFactory.ResolveViewType(viewModelType);
+        var viewType = pageFactory.ResolveViewType(typeof(TViewModel));
         var result = viewType.IsSubclassOf(typeof(ContentPage)) || viewType == typeof(ContentPage);
         return result;
     }
@@ -28,19 +28,17 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
 
             var navigation = applicationProvider.Navigation;
             var leavingPage = navigation.NavigationStack.LastOrDefault();
-
-            var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
-            var pageToNavigate = pageFactory.ResolvePage(viewModelType);
+            var pageToNavigate = pageFactory.ResolvePage(typeof(TViewModel));
 
             await MvvmHelpers.OnInitializeAsync(pageToNavigate, parameters);
 
-            if (MvvmHelpers.IsINavigationPage<TViewModel>())
+            if (applicationProvider.HasNavigationPage)
             {
-                await navigation.PushAsync(new NavigationPage(pageToNavigate));
+                await navigation.PushAsync(pageToNavigate);
             }
             else
             {
-                await navigation.PushAsync(pageToNavigate);
+                await navigation.PushAsync(new NaveasyNavigationPage(pageToNavigate));
             }
 
             MvvmHelpers.OnNavigatedFrom(leavingPage, parameters);
@@ -53,6 +51,7 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
         }
         catch (Exception ex)
         {
+            logger?.LogError(ex, ex.Message);
             return new NavigationResult(ex);
         }
     }
@@ -71,15 +70,11 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
 
             pagesToRemove.Reverse();
 
-            var viewModelType = MvvmHelpers.GetINavigationPageGenericType<TViewModel>();
-            var pageToNavigate = pageFactory.ResolvePage(viewModelType);
+            var pageToNavigate = pageFactory.ResolvePage(typeof(TViewModel));
 
             await MvvmHelpers.OnInitializeAsync(pageToNavigate, parameters);
 
-
-            Application.Current!.MainPage = MvvmHelpers.IsINavigationPage<TViewModel>()
-                ? new NavigationPage(pageToNavigate)
-                : pageToNavigate;
+            Application.Current!.Windows[0].Page = new NaveasyNavigationPage(pageToNavigate);
 
             foreach (var destroyPage in pagesToRemove)
             {
@@ -95,6 +90,7 @@ public class NavigationPageNavigationProcessor(IApplicationProvider applicationP
         }
         catch (Exception ex)
         {
+            logger?.LogError(ex, ex.Message);
             return new NavigationResult(ex);
         }
     }

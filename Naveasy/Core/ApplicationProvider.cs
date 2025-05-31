@@ -2,6 +2,7 @@ namespace Naveasy.Core;
 
 public interface IApplicationProvider
 {
+    bool HasNavigationPage { get; }
     INavigation Navigation { get; }
     Page MainPage { get; }
     List<Page> PagesToRemove { get; }
@@ -9,10 +10,12 @@ public interface IApplicationProvider
 
 public class ApplicationProvider : IApplicationProvider
 {
-    public Page MainPage => Application.Current?.MainPage;
+    public Page MainPage => Application.Current!.Windows[0].Page;
+
+    public bool HasNavigationPage => Navigation != null;
 
     public INavigation Navigation => MainPage is FlyoutPage flyoutPage
-        ? flyoutPage.Detail is NavigationPage 
+        ? flyoutPage.Detail is NavigationPage
             ? flyoutPage.Detail.Navigation
             : null
         : MainPage.Navigation;
