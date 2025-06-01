@@ -28,7 +28,7 @@ It it works with:
 ### 4) Configure Naveasy on your MauiProgram.cs
 On call the generic method `.UseNaveasy<TViewModel>();` with the type of your `StartupPageViewModel`.
     - Pay attention that you should specify here the Type of your startup page `ViewModel` NOT the `Page` ok cause Naveasy is a `ViewModel` to `ViewModel` navigation framework.
-    - The same concept explained abote must be followed when you'll use the `INavigationService` on your other Pages, use the `ViewModel` type rather the the `Page` type to perform navigation. 
+    - The same concept explained above must be followed when you'll use the `INavigationService` on your other Pages, use the `ViewModel` type rather the the `Page` type to perform navigation. 
     - Register your `Page` and it's corresponding `PageViewModel` on `builder.Services` using Navaeasy's `.AddTransientForNavigation<TPage, TPageViewModel>` like described bellow.
 ```csharp
 using Naveasy.Core;
@@ -59,7 +59,7 @@ public static class MauiProgram
     
 - Naveasy v3 already does it for you internally, that's because we need to hook up our own events to make Naveasy work properly.
 - If you have the `protected override Window CreateWindow(IActivationState? activationState)` method on your App.xaml.cs, go there and remove it.
-    - any custom logic that you might already have the if you were using Naveasy versions older then v3, move your custom logic the `ViewModel` created on step `#3` of this documentation.
+    - any custom logic that you might already have there if you were using Naveasy versions older then v3, move your custom logic the `ViewModel` created on step `#3` of this documentation.
 - Your App.xaml.cs file can be as clean as in the example bellow so you'll probably never look back to it to bootstrap your application.
 
 ```csharp
