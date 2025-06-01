@@ -8,15 +8,22 @@ public class FeaturePageDViewModel : ViewModelBase
     {
         _navigationService = navigationService;
         Title = "Page D";
-        NavigateCommand = new Command(Navigate);
+        NavigateBackCommand = new Command(NavigateBack);
+        NavigateBackToRootCommand = new Command(NavigateToRoot);
         SignOutCommand = new Command(SignOut);
     }
 
-    public ICommand NavigateCommand { get; }
+    public ICommand NavigateBackCommand { get; }
+    public ICommand NavigateBackToRootCommand { get; set; }
 
     public ICommand SignOutCommand { get; }
 
-    private void Navigate()
+    private void NavigateBack()
+    {
+        _navigationService.GoBackAsync();
+    }
+
+    private void NavigateToRoot()
     {
         _navigationService.GoBackToRootAsync();
     }

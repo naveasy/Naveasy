@@ -2,7 +2,10 @@
 
 public class FeaturePage2ViewModel : ViewModelBase
 {
+    private string? _primitive;
     private readonly INavigationService _navigationService;
+    private ProductModel _product = null!;
+    private ClientModel _client = null!;
 
     public FeaturePage2ViewModel(INavigationService navigationService)
     {
@@ -11,26 +14,45 @@ public class FeaturePage2ViewModel : ViewModelBase
         NavigateCommand = new Command(Navigate);
     }
 
+    public string? Primitive
+    {
+        get => _primitive;
+        set => SetProperty(ref _primitive, value);
+    }
+
+
+    public ClientModel Client
+    {
+        get => _client;
+        set => SetProperty(ref _client, value);
+    }
+
+    public ProductModel Product
+    {
+        get => _product;
+        set => SetProperty(ref _product, value);
+    }
+
     public ICommand NavigateCommand { get; }
+
+    public override void OnInitialize(INavigationParameters parameters)
+    {
+        Product = parameters.GetValue<ProductModel>();
+        Client = parameters.GetValue<ClientModel>();
+    }
+
+    public override void OnNavigatedTo(INavigationParameters navigationParameters)
+    {
+        base.OnNavigatedTo(navigationParameters);
+    }
+
+    public override void OnNavigatedFrom(INavigationParameters navigationParameters)
+    {
+        base.OnNavigatedFrom(navigationParameters);
+    }
 
     private void Navigate()
     {
-        var primitive = 2.5d;
-        var model = new ModelA()
-        {
-            Id = 1,
-            Name = "Parameter from Login Page"
-        };
-
-        var navigationParameters = model.ToNavigationParameter()
-                                        .Including(primitive);
-            //You can include as many parameter as you want using the .Including() method
-            //Take care to do not add parameters with the same type cause on next page you
-            //will use the type of the parameter to get it's values.
-            //If you need multiple parameters of the same type create your own complex type like
-            // the ModelA that's being instantiated on line 23,
-
-
-        _navigationService.NavigateAsync<MyPage3ViewModel>(navigationParameters);
+        _navigationService.NavigateAsync<MyPage3ViewModel>();
     }
 }

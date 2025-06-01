@@ -14,11 +14,5 @@
         <Button Text="Next"
                 Command="{Binding NavigateCommand}"
                 HorizontalOptions="Fill" />
-
-        <Label Text="{Binding Text}"
-               VerticalOptions="Center"
-               HorizontalOptions="Center"
-               Margin="15"
-               TextColor="{StaticResource PrimaryTextColor}" />
     </VerticalStackLayout>
 </ContentPage>

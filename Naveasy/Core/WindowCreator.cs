@@ -14,7 +14,7 @@ internal class WindowCreator() : IWindowCreator
 
         _page = pageFactory.ResolvePage(initialNavigationTypeProvider.InitialNavigationViewModelType);
 
-        var window = new Window(_page);
+        var window = new NaveasyWindow(_page);
         window.Created += OnWindowCreated;
         return window;
     }

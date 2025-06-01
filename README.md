@@ -12,16 +12,25 @@ It it works with:
 
 ## Get Started
 
-1) Install it from nuget.org [![Static Badge](https://img.shields.io/badge/Naveasy-%20nuget.org-%20%23097ABB?link=https%3A%2F%2Fwww.nuget.org%2Fpackages%2FNaveasy)](https://www.nuget.org/packages/Naveasy)
+### 1) Install it from nuget.org [![Static Badge](https://img.shields.io/badge/Naveasy-%20nuget.org-%20%23097ABB?link=https%3A%2F%2Fwww.nuget.org%2Fpackages%2FNaveasy)](https://www.nuget.org/packages/Naveasy)
 
 
-2) Add the following namespace to your MauiProgram.cs:  
+### 2) Add the following namespace to your MauiProgram.cs:  
 ```using Naveasy;```
 
-3) On your MauiAppBuilder add the invoke `.UseNaveasy<YourStartup_Page_VIEW_MODEL>();`
-4) Register your `Page` and it's corresponding `PageViewModel` on `builder.Services.AddTransientForNavigation<Page, PageViewModel>` like described bellow.
+### 3) Create a new `ContentPage` and it's corresponding `ViewModel`
+   - Inside this `ViewModel` ask for an instance of `INavigationService` on it's `class` contructor and store it in a private field;
+   - Make this `PageViewModel` to implemnt `Naveasy.IPageLifecycleAware`
+   - Inside the `void OnAppearing()` method of this VM use the `INavigationService` instance that you've got to navigate to other page of your choice.
+   - Tip.: You car you this `StartupPageViewMode` to implement custom logic like quering you web API's or checking credential and ect conditionaly navigate to login page or another page if the user is alrealy logged-in.
+   - in example bellow I've named it `StartupPage` & `StartupPageViewMode`);
+
+### 4) Configure Naveasy on your MauiProgram.cs
+On call the generic method `.UseNaveasy<TViewModel>();` with the type of your `StartupPageViewModel`.
+    - Pay attention that you should specify here the Type of your startup page `ViewModel` NOT the `Page` ok cause Naveasy is a `ViewModel` to `ViewModel` navigation framework.
+    - The same concept explained above must be followed when you'll use the `INavigationService` on your other Pages, use the `ViewModel` type rather the the `Page` type to perform navigation. 
+    - Register your `Page` and it's corresponding `PageViewModel` on `builder.Services` using Navaeasy's `.AddTransientForNavigation<TPage, TPageViewModel>` like described bellow.
 ```csharp
-using Microsoft.Extensions.Logging;
 using Naveasy.Core;
 
 namespace Naveasy.Samples;
@@ -29,37 +38,29 @@ public static class MauiProgram
 {
     public static MauiApp CreateMauiApp()
     {
-        var builder = MauiApp.CreateBuilder();
-        builder
+        var builder = MauiApp.CreateBuilder()
             .UseMauiApp<App>()
-            .UseNaveasy<SplashPageViewModel>() //The generic type specified in builder.UseNaveasy<T>()
-                                               //will be used to create a new window and navigate to it SplashPageViewModel
-            .ConfigureFonts(fonts =>
-            {
-                fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
-                fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-            });
+            .UseNaveasy<StartupPageViewModel>() //The generic type specified in builder.UseNaveasy<T>()
+                                               //will be used to create a new window and navigate to it StartupPageViewModel
 
-        builder.Services
             //Register your types here using Microsoft.Extensions.DependecyInjection's container
-            .AddTransientForNavigation<SplashPage, SplashPageViewModel>()
+            .AddTransientForNavigation<StartupPage, StartupPageViewModel>()
             .AddTransientForNavigation<LoginPage, LoginPageViewModel>();
 
-        #if DEBUG
-            builder.Logging
-                .SetMinimumLevel(LogLevel.Trace)
-                .AddDebug();
-        #endif
-
+            .ConfigureFonts(fonts =>
+            { fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular"); });
         return builder.Build();
     }
 }
 ```
 
-4) Do NOT override the `CreateWindow()` on your `App.xaml.cs`
-    `protected override Window CreateWindow(IActivationState? activationState)`
-- Naveasy v3 already does to it for you during the startup navigation phase.
-  Your App.xaml.cs file can be as clean as in the example bellow so you'll probably never look back to it to bootstrap your application.
+# --- IMPORTANT ---
+6) You should not `override CreateWindow()` on your `App.xaml.cs`;
+    
+- Naveasy v3 already does it for you internally, that's because we need to hook up our own events to make Naveasy work properly.
+- If you have the `protected override Window CreateWindow(IActivationState? activationState)` method on your App.xaml.cs, go there and remove it.
+    - any custom logic that you might already have there if you were using Naveasy older then v3, can be moved to the `ViewModel` created on step `#3` of this documentation.
+- Your App.xaml.cs file can be as clean as in the example bellow so you'll probably never have to look back to it in the future.
 
 ```csharp
 public partial class App : Application
@@ -71,6 +72,7 @@ public partial class App : Application
 }
 ```
 
+## Optional
 You can refer to the sample that we have here on this repo to have a more in depth understanding of how you can navigate from one page to another and also how to handle the various page lifecycle events.
 You can optionaly implement the following handy base class which provides the various page lifecicle events that you would care about:
 
