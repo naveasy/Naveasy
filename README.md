@@ -18,7 +18,7 @@ It it works with:
 ### 2) Add the following namespace to your MauiProgram.cs:  
 ```using Naveasy;```
 
-### 3) Create a new `ContentPage` it's `ViewModel`
+### 3) Create a new `ContentPage` and it's `ViewModel`
    - Inside this `ViewModel` ask for an instance of `INavigationService` on it's `class` contructor and store it in a private field;
    - Make this `PageViewModel` to implemnt `Naveasy.IPageLifecycleAware`
    - Inside the `void OnAppearing()` method of this VM use the `INavigationService` instance that you've got to navigate to other page of your choice.
