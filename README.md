@@ -19,17 +19,17 @@ It it works with:
 ```using Naveasy;```
 
 ### 3) Create a new `ContentPage` and it's corresponding `ViewModel`
-   - Inside this `ViewModel` ask for an instance of `INavigationService` on it's `class` contructor and store it in a private field;
-   - Make this `PageViewModel` to implemnt `Naveasy.IPageLifecycleAware`
+   - Inside this `ViewModel` ask for an instance of `INavigationService` on it's `class` constructor and store it in a private field.
+   - Make this `PageViewModel` to implement `Naveasy.IPageLifecycleAware`
    - Inside the `void OnAppearing()` method of this VM use the `INavigationService` instance that you've got to navigate to other page of your choice.
-   - Tip.: You car you this `StartupPageViewMode` to implement custom logic like quering you web API's or checking credential and ect conditionaly navigate to login page or another page if the user is alrealy logged-in.
-   - in example bellow I've named it `StartupPage` & `StartupPageViewMode`);
+   - Tip.: You can use this `StartupPageViewMode` to implement custom logic like quering you web API's or checking credential and ect conditionaly navigate to login page or another page if the user is alrealy logged-in.
+   - in example below I've named it `StartupPage` & `StartupPageViewMode`
 
 ### 4) Configure Naveasy on your MauiProgram.cs
-On call the generic method `.UseNaveasy<TViewModel>();` with the type of your `StartupPageViewModel`.
-    - Pay attention that you should specify here the Type of your startup page `ViewModel` NOT the `Page` ok cause Naveasy is a `ViewModel` to `ViewModel` navigation framework.
-    - The same concept explained above must be followed when you'll use the `INavigationService` on your other Pages, use the `ViewModel` type rather the the `Page` type to perform navigation. 
-    - Register your `Page` and it's corresponding `PageViewModel` on `builder.Services` using Navaeasy's `.AddTransientForNavigation<TPage, TPageViewModel>` like described bellow.
+   - Call the generic method `.UseNaveasy<TViewModel>();` using your `StartupPageViewModel` type.
+   - Pay attention that you should specify here the Type of your startup page `ViewModel` NOT the `Page` ok, cause Naveasy is a `ViewModel` to `ViewModel` navigation framework.
+   - The same concept explained above must be followed when you'll use the `INavigationService` on your other Pages, use the `ViewModel` type rather the the `Page` type to perform navigation. 
+   - Register your `Page` and it's corresponding `PageViewModel` on `builder.Services` using Navaeasy's `.AddTransientForNavigation<TPage, TPageViewModel>` like described bellow.
 ```csharp
 using Naveasy.Core;
 
@@ -109,4 +109,4 @@ https://github.com/dotnet/maui/issues/7354
 https://github.com/dotnet/maui/issues/21814
 https://github.com/dotnet/maui/issues/21816
 
-This library was inpired on the Dotnet Foundation version of [PRISM](https://github.com/PrismLibrary/Prism/releases/tag/DNF).
+This library was inpired on the Dotnet Foundation version of PRISM that's no longer a free library.
