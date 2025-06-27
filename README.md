@@ -40,8 +40,8 @@ public static class MauiProgram
     {
         var builder = MauiApp.CreateBuilder()
             .UseMauiApp<App>()
-            .UseNaveasy<StartupPageViewModel>() //The generic type specified in builder.UseNaveasy<T>()
-                                               //will be used to create a new window and navigate to it StartupPageViewModel
+            //The generic type specified in the line bellow (i.e: StartupPageViewModel) will be used to create a new window and navigate to it.
+            .UseNaveasy<StartupPageViewModel>()
             .ConfigureFonts(fonts =>
             { fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular"); });
 
