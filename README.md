@@ -42,13 +42,14 @@ public static class MauiProgram
             .UseMauiApp<App>()
             .UseNaveasy<StartupPageViewModel>() //The generic type specified in builder.UseNaveasy<T>()
                                                //will be used to create a new window and navigate to it StartupPageViewModel
+            .ConfigureFonts(fonts =>
+            { fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular"); });
 
-            //Register your types here using Microsoft.Extensions.DependecyInjection's container
+        //Register your types here using Microsoft.Extensions.DependecyInjection's container
+        builder.Services.
             .AddTransientForNavigation<StartupPage, StartupPageViewModel>()
             .AddTransientForNavigation<LoginPage, LoginPageViewModel>();
 
-            .ConfigureFonts(fonts =>
-            { fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular"); });
         return builder.Build();
     }
 }
