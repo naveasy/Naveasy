@@ -1,9 +1,10 @@
 using System.Reflection;
 
-namespace Naveasy.Core;
+namespace Naveasy;
 
 public static class PageRegistry
 {
+    // ReSharper disable once InconsistentNaming
     private static readonly Dictionary<Type, Type> _pageDictionary = [];
 
     public static Type ResolveViewType(Type viewModelType)

@@ -36,25 +36,25 @@ public class MyFlyoutPageViewModel : ViewModelBase
         switch (targetPage)
         {
             case "FeaturePageA":
-                _navigationService.NavigateAsync<FeaturePageAViewModel>();
+                _navigationService.NavigateFlyoutDetailAbsoluteAsync<FeaturePageAViewModel>();
                 break;
             case "FeaturePageB":
-                _navigationService.NavigateAsync<FeaturePageBViewModel>();
+                _navigationService.NavigateFlyoutDetailAbsoluteAsync<FeaturePageBViewModel>();
                 break;
             case "FeaturePageC":
-                _navigationService.NavigateAsync<FeaturePageCViewModel>();
+                _navigationService.NavigateFlyoutDetailAbsoluteAsync<FeaturePageCViewModel>();
                 break;
             case "FeaturePageD":
-                _navigationService.NavigateAsync<FeaturePageDViewModel>();
+                _navigationService.NavigateFlyoutDetailAbsoluteAsync<FeaturePageDViewModel>();
                 break;
             case "FeaturePage1":
-                _navigationService.NavigateAsync<FeaturePage1ViewModel>();
+                _navigationService.NavigateFlyoutDetailAbsoluteAsync<FeaturePage1ViewModel>();
                 break;
             case "FeaturePage2":
-                _navigationService.NavigateAsync<FeaturePage2ViewModel>();
+                _navigationService.NavigateFlyoutDetailAbsoluteAsync<FeaturePage2ViewModel>();
                 break;
             case "SignOut":
-                _navigationService.NavigateAbsoluteAsync<LoginPageViewModel>();
+                _navigationService.NavigateFlyoutDetailAbsoluteAsync<LoginPageViewModel>();
                 break;
         }
     }

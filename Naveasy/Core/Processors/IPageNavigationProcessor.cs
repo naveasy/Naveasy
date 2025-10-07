@@ -10,4 +10,5 @@ public interface IPageNavigationProcessor
 public interface IFlyoutPageNavigationProcessor : IPageNavigationProcessor
 {
     Task<INavigationResult> NavigateFlyoutAbsoluteAsync<TFlyoutViewModel, TDetailViewModel>(INavigationParameters flyoutParameters = null, INavigationParameters detailParameters = null, bool? animated = null);
+    Task<INavigationResult> NavigateFlyoutDetailAbsoluteAsync<TDetailViewModel>(INavigationParameters detailParameters = null, bool? animated = null);
 }

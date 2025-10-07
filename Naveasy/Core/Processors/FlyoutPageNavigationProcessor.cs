@@ -4,7 +4,8 @@ using Naveasy.Extensions;
 
 namespace Naveasy.Core.Processors;
 
-public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvider, IPageFactory pageFactory, ILogger<FlyoutPageNavigationProcessor> logger) : IFlyoutPageNavigationProcessor
+public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvider, IPageFactory pageFactory, ILogger<FlyoutPageNavigationProcessor> logger) 
+    : IFlyoutPageNavigationProcessor
 {
     public bool CanHandle<TViewModel>()
     {
@@ -26,16 +27,25 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
             parameters ??= new NavigationParameters();
 
             var flyoutPage = (FlyoutPage)applicationProvider.MainPage;
+            var detailNavigationPage = flyoutPage.Detail as NavigationPage;
+
+            if (flyoutPage.IsPresented &&
+                flyoutPage.Detail is NavigationPage detailNavPage &&
+                detailNavPage.RootPage.BindingContext is TViewModel)
+            {
+                //This is to prevent navigating to the same page again when the detail is already showing the requested ViewModel
+                flyoutPage.IsPresented = false;
+                MvvmHelpers.OnNavigatedFrom(flyoutPage.Flyout, parameters);
+                await MvvmHelpers.OnNavigatedTo(detailNavPage.CurrentPage, parameters);
+                return new NavigationResult(true);
+            }
+
             var pageToNavigate = pageFactory.ResolvePage(typeof(TViewModel));
 
             await MvvmHelpers.OnInitializeAsync(pageToNavigate, parameters);
 
-            if (!flyoutPage.IsPresented && flyoutPage.Detail is NavigationPage detailNavigationPage)
+            if (!flyoutPage.IsPresented && detailNavigationPage != null)
             {
-                var leavingPage = flyoutPage.Detail is NavigationPage leavingNavigationPage
-                    ? leavingNavigationPage.CurrentPage
-                    : flyoutPage.Detail;
-
                 if (applicationProvider.HasNavigationPage)
                 {
                     await detailNavigationPage.Navigation.PushAsync(pageToNavigate);
@@ -44,29 +54,24 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
                 {
                     await detailNavigationPage.Navigation.PushAsync(new NaveasyNavigationPage(pageToNavigate));
                 }
-                MvvmHelpers.OnNavigatedFrom(leavingPage, parameters);
+                MvvmHelpers.OnNavigatedFrom(detailNavigationPage, parameters);
             }
             else
             {
-                if (flyoutPage.Detail is NavigationPage navigationPage)
+                if (detailNavigationPage != null)
                 {
-                    await navigationPage.Navigation.PushAsync(pageToNavigate);
+                    await detailNavigationPage.Navigation.PushAsync(pageToNavigate);
                 }
                 else
                 {
-                    var pagesToRemove = flyoutPage.Detail is NavigationPage leavingDetail
-                        ? leavingDetail.Navigation.NavigationStack.ToList()
-                        : [flyoutPage.Detail];
+                    var pageToRemove = flyoutPage.Detail;
 
                     flyoutPage.Detail = applicationProvider.HasNavigationPage
                         ? pageToNavigate
                         : new NaveasyNavigationPage(pageToNavigate);
 
-                    foreach (var destroyPage in pagesToRemove)
-                    {
-                        MvvmHelpers.OnNavigatedFrom(destroyPage, parameters);
-                        MvvmHelpers.DestroyPage(destroyPage);
-                    }
+                    MvvmHelpers.OnNavigatedFrom(pageToRemove, parameters);
+                    MvvmHelpers.DestroyPage(pageToRemove);
                 }
 
                 flyoutPage.IsPresented = false;
@@ -115,6 +120,60 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
             await MvvmHelpers.OnInitializedAsync(pageToNavigate, parameters);
             parameters.GetNavigationParametersInternal().Add(KnownInternalParameters.NavigationMode, NavigationMode.New);
             await MvvmHelpers.OnNavigatedTo(pageToNavigate, parameters);
+
+            return new NavigationResult(true);
+        }
+        catch (Exception ex)
+        {
+            logger?.LogError(ex, ex.Message);
+            return new NavigationResult(ex);
+        }
+    }
+
+    public async Task<INavigationResult> NavigateFlyoutDetailAbsoluteAsync<TDetailViewModel>(INavigationParameters detailParameters = null, bool? animated = null)
+    {
+        try
+        {
+            var flyoutPage = (FlyoutPage)applicationProvider.MainPage;
+
+            if (flyoutPage.IsPresented &&
+                flyoutPage.Detail is NavigationPage detailNavPage &&
+                detailNavPage.RootPage.BindingContext is TDetailViewModel)
+            {
+                //This is to prevent navigating to the same page again when the detail is already showing the requested ViewModel
+                flyoutPage.IsPresented = false;
+                MvvmHelpers.OnNavigatedFrom(flyoutPage.Flyout, detailParameters);
+                await MvvmHelpers.OnNavigatedTo(detailNavPage.CurrentPage, detailParameters);
+                return new NavigationResult(true);
+            }
+
+            detailParameters ??= new NavigationParameters();
+
+            var pagesToRemove = flyoutPage.Detail is NavigationPage leavingNavigationPage
+                ? leavingNavigationPage.Navigation.NavigationStack.ToList()
+                : [flyoutPage.Detail];
+
+            pagesToRemove.Reverse();
+
+            var detailPage = pageFactory.ResolvePage(typeof(TDetailViewModel));
+
+            await MvvmHelpers.OnInitializeAsync(detailPage, detailParameters);
+
+            flyoutPage.Detail = new NaveasyNavigationPage(detailPage);
+
+            //Application.Current!.Windows[0].Page = flyoutPage;
+
+            foreach (var destroyPage in pagesToRemove)
+            {
+                MvvmHelpers.OnNavigatedFrom(destroyPage, detailParameters);
+                MvvmHelpers.DestroyPage(destroyPage);
+            }
+
+            detailParameters.GetNavigationParametersInternal().Add(KnownInternalParameters.NavigationMode, NavigationMode.New);
+
+            await MvvmHelpers.OnInitializedAsync(detailPage, detailParameters);
+
+            await MvvmHelpers.OnNavigatedTo(detailPage, detailParameters);
 
             return new NavigationResult(true);
         }
