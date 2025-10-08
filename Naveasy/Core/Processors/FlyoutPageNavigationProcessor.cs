@@ -160,6 +160,7 @@ public class FlyoutPageNavigationProcessor(IApplicationProvider applicationProvi
             await MvvmHelpers.OnInitializeAsync(detailPage, detailParameters);
 
             flyoutPage.Detail = new NaveasyNavigationPage(detailPage);
+            flyoutPage.IsPresented = false;
 
             //Application.Current!.Windows[0].Page = flyoutPage;
 
