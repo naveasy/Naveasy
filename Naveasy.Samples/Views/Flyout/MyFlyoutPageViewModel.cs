@@ -8,6 +8,7 @@ public class MyFlyoutPageViewModel : ViewModelBase
     {
         _navigationService = navigationService;
         NavigateCommand = new Command<string>(DoNavigate);
+        CloseFlyoutCommand = new Command(() => IsFlyoutPresented = false);
     }
 
     private string? _text;
@@ -30,6 +31,7 @@ public class MyFlyoutPageViewModel : ViewModelBase
     }
 
     public ICommand NavigateCommand { get; }
+    public ICommand CloseFlyoutCommand { get; }
 
     private void DoNavigate(string targetPage)
     {

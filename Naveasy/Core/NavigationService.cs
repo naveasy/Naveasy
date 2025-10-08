@@ -23,6 +23,26 @@ public class NavigationService : INavigationService
         _pageNavigationProcessors = pageNavigationProcessors;
     }
 
+    public bool IsFlyoutOpen
+    {
+        get
+        {
+            if (_applicationProvider.MainPage is FlyoutPage flyoutPage)
+            {
+                return flyoutPage.IsPresented;
+            }
+            return false;
+        }
+
+        set
+        {
+            if (_applicationProvider.MainPage is FlyoutPage flyoutPage)
+            {
+                flyoutPage.IsPresented = value;
+            }
+        }
+    }
+
     internal static NavigationSource CurrentNavigationSource { get; private set; } = NavigationSource.System;
 
     public async Task<INavigationResult> GoBackAsync(INavigationParameters parameters = null, bool? animated = null)

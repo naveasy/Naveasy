@@ -32,6 +32,10 @@
                     <Button Text="Page 2"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="FeaturePage2" />
+
+                    <Button Text="Close Flyout"
+                            Command="{Binding CloseFlyoutCommand}" />
+
                     <Button Text="SignOut"
                             Command="{Binding NavigateCommand}"
                             CommandParameter="SignOut" />
