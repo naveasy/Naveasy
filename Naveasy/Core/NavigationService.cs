@@ -23,6 +23,26 @@ public class NavigationService : INavigationService
         _pageNavigationProcessors = pageNavigationProcessors;
     }
 
+    public bool IsFlyoutOpen
+    {
+        get
+        {
+            if (_applicationProvider.MainPage is FlyoutPage flyoutPage)
+            {
+                return flyoutPage.IsPresented;
+            }
+            return false;
+        }
+
+        set
+        {
+            if (_applicationProvider.MainPage is FlyoutPage flyoutPage)
+            {
+                flyoutPage.IsPresented = value;
+            }
+        }
+    }
+
     internal static NavigationSource CurrentNavigationSource { get; private set; } = NavigationSource.System;
 
     public async Task<INavigationResult> GoBackAsync(INavigationParameters parameters = null, bool? animated = null)
@@ -196,6 +216,18 @@ public class NavigationService : INavigationService
         var processor = (IFlyoutPageNavigationProcessor)_pageNavigationProcessors.Single(x => x.CanHandle<TFlyoutViewModel>());
 
         var result = await processor.NavigateFlyoutAbsoluteAsync<TFlyoutViewModel, TDetailViewModel>(flyoutParameters, detailParameters, animated);
+
+        CurrentNavigationSource = NavigationSource.System;
+        return result;
+    }
+
+    public async Task<INavigationResult> NavigateFlyoutDetailAbsoluteAsync<TDetailViewModel>(INavigationParameters detailParameters = null, bool? animated = null)
+    {
+        CurrentNavigationSource = NavigationSource.NavigationService;
+
+        var processor = (IFlyoutPageNavigationProcessor)_pageNavigationProcessors.Single(x => x.CanHandle<TDetailViewModel>());
+
+        var result = await processor.NavigateFlyoutDetailAbsoluteAsync<TDetailViewModel>(detailParameters, animated);
 
         CurrentNavigationSource = NavigationSource.System;
         return result;
