@@ -84,6 +84,7 @@ using Naveasy;
 
 namespace MyApp.Views.Startup;
 
+//Some people prefer calling it BrandingPage
 public class StartupPageViewModel : BindableBase, IPageLifecycleAware
 {
     private readonly INavigationService _navigationService;
@@ -110,7 +111,11 @@ And its matching `StartupPage` (an empty `ContentPage` works fine — it is just
 <?xml version="1.0" encoding="utf-8" ?>
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="MyApp.Views.Startup.StartupPage" />
+             x:Class="MyApp.Views.Startup.StartupPage">
+
+    <Image Source="{YOUR_APP_LOGO} />
+
+<ContentPage/>
 ```
 
 ### 2) Configure Naveasy in `MauiProgram.cs`
