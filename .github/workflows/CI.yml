@@ -84,6 +84,8 @@ jobs:
   build-wpf:
     runs-on: windows-latest
     needs: git-version
+    permissions:
+      id-token: write  # enable GitHub OIDC token issuance for this job
     env:
       SemVer: ${{ needs.git-version.outputs.SemVer }}
       AssemblySemVer: ${{ needs.git-version.outputs.AssemblySemVer }}
