@@ -17,6 +17,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <!-- Shell navigation relies on fixes shipped in 10.0.101 (Android root page back handling, Navigating on
+             ShellContent change and a non stale Shell.CurrentState.Location inside OnNavigated). -->
         <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.101" />
     </ItemGroup>
 

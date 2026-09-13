@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<TabbedPage x:Class="Naveasy.Shell.Samples.Views.Reports.ReportsPage"
+            xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+            xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+            xmlns:reports="clr-namespace:Naveasy.Shell.Samples.Views.Reports"
+            x:DataType="reports:ReportsPageViewModel"
+            Title="{Binding Title}">
+    <reports:SummaryPage />
+    <reports:ChartPage />
+</TabbedPage>

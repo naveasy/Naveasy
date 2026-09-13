@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Shell x:Class="Naveasy.Shell.Samples.AppShell"
+       xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:home="clr-namespace:Naveasy.Shell.Samples.Views.Home"
+       xmlns:login="clr-namespace:Naveasy.Shell.Samples.Views.Login"
+       xmlns:orders="clr-namespace:Naveasy.Shell.Samples.Views.Orders"
+       FlyoutBehavior="Disabled"
+       Title="Naveasy.Shell">
+
+    <!-- The starting point of the app. It is hidden from the flyout and, because Naveasy resolves the
+         ViewModel of every ShellContent, LoginPage gets its LoginPageViewModel and the Naveasy lifecycle. -->
+    <ShellContent Route="login"
+                  FlyoutItemIsVisible="False"
+                  ContentTemplate="{DataTemplate login:LoginPage}" />
+
+    <FlyoutItem Title="Naveasy.Shell"
+                Route="main"
+                FlyoutDisplayOptions="AsMultipleItems">
+
+        <Tab Title="Home"
+             Route="home">
+            <ShellContent Route="homepage"
+                          ContentTemplate="{DataTemplate home:HomePage}" />
+        </Tab>
+
+        <Tab Title="Orders"
+             Route="orders">
+            <ShellContent Route="orderspage"
+                          ContentTemplate="{DataTemplate orders:OrdersPage}" />
+        </Tab>
+
+    </FlyoutItem>
+
+</Shell>

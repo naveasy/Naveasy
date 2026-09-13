@@ -20,8 +20,4 @@
         <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.101" />
     </ItemGroup>
 
-    <ItemGroup>
-        <ProjectReference Include="..\Naveasy.Abstractions\Naveasy.Abstractions.csproj" />
-    </ItemGroup>
-
 </Project>

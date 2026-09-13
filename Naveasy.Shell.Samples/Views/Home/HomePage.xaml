@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="Naveasy.Shell.Samples.Views.Home.HomePage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:home="clr-namespace:Naveasy.Shell.Samples.Views.Home"
+             x:DataType="home:HomePageViewModel"
+             Title="{Binding Title}">
+    <ScrollView>
+        <VerticalStackLayout Padding="30,20"
+                             Spacing="15">
+            <Label Text="{Binding Title}"
+                   Style="{StaticResource Headline}" />
+
+            <Button Text="Select the Orders tab"
+                    Command="{Binding SelectOrdersTabCommand}" />
+
+            <Button Text="Open a guarded page"
+                    Command="{Binding OpenGuardedPageCommand}" />
+
+            <Button Text="Open the reports (TabbedPage)"
+                    Command="{Binding OpenReportsCommand}" />
+
+            <Button Text="Open the flyout"
+                    Command="{Binding OpenFlyoutCommand}" />
+
+            <Button Text="Open order 2 through a deep link"
+                    Command="{Binding OpenDeepLinkCommand}" />
+
+            <Button Text="Sign out"
+                    Command="{Binding SignOutCommand}" />
+        </VerticalStackLayout>
+    </ScrollView>
+</ContentPage>
