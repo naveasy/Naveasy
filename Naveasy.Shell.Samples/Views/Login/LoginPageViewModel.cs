@@ -6,7 +6,7 @@ public class LoginPageViewModel : ViewModelBase
 
     public LoginPageViewModel(INavigationService navigationService)
     {
-        Title = "Sign in";
+        Title = "Login";
         _navigationService = navigationService;
         SignInCommand = new Command(async () => await SignInAsync());
     }
@@ -18,5 +18,10 @@ public class LoginPageViewModel : ViewModelBase
         // An absolute navigation switches the Shell item and resets the navigation stack, so the user
         // cannot go back to the login page.
         await _navigationService.NavigateAbsoluteAsync<HomePageViewModel>();
+    }
+
+    public override void Dispose()
+    {
+        base.Dispose();
     }
 }

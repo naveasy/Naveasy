@@ -15,7 +15,7 @@ public class OrderDetailPageViewModel : ViewModelBase
 
     public OrderDetailPageViewModel(INavigationService navigationService, IOrderService orderService)
     {
-        Title = "Order";
+        Title = "Order Detail";
         _navigationService = navigationService;
         _orderService = orderService;
 

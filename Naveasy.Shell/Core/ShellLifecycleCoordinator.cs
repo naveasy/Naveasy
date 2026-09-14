@@ -8,7 +8,7 @@ namespace Naveasy.Shell.Core;
 
 /// <summary>
 /// Bridges the Shell navigation events to the Naveasy lifecycle: IInitialize/IInitializeAsync, INavigatedAware,
-/// IConfirmNavigation and the disposal of the pages that leave the navigation stack.
+/// IConfirmNavigation and the disposal of the pages Shell no longer keeps.
 /// </summary>
 public sealed class ShellLifecycleCoordinator
 {
@@ -48,6 +48,15 @@ public sealed class ShellLifecycleCoordinator
             return;
 
         Unsubscribe(shell);
+
+        if (_states.TryGetValue(shell, out var state))
+        {
+            foreach (var page in state.TrackedPages)
+                page.Unloaded -= OnTrackedPageUnloaded;
+
+            state.TrackedPages.Clear();
+        }
+
         _states.Remove(shell);
     }
 
@@ -67,15 +76,11 @@ public sealed class ShellLifecycleCoordinator
 
         try
         {
-            await ActivateAsync(state, currentPage, PrepareParameters(null, NavigationMode.New));
+            await ActivateAsync(shell, state, currentPage, PrepareParameters(null, NavigationMode.New));
         }
         catch (Exception ex)
         {
             _logger?.LogError(ex, "Naveasy could not activate the root page {Page}.", currentPage);
-        }
-        finally
-        {
-            state.PagesBeforeNavigation = GetPages(shell);
         }
     }
 
@@ -92,7 +97,6 @@ public sealed class ShellLifecycleCoordinator
             return;
 
         var state = _states.GetOrCreateValue(shell);
-        state.PagesBeforeNavigation = GetPages(shell);
         state.NavigatingFrom = shell.CurrentPage;
 
         // Only the target state of this event carries the query string of a deep link.
@@ -153,9 +157,9 @@ public sealed class ShellLifecycleCoordinator
             if (previousPage is not null && !ReferenceEquals(previousPage, currentPage))
                 InvokeOnNavigatedFrom(previousPage, parameters);
 
-            await ActivateAsync(state, currentPage, parameters);
+            await ActivateAsync(shell, state, currentPage, parameters);
 
-            DestroyRemovedPages(shell, state, currentPage);
+            DestroyDisconnectedPages(shell, state);
         }
         catch (Exception ex)
         {
@@ -165,7 +169,6 @@ public sealed class ShellLifecycleCoordinator
         {
             state.NavigatingFrom = null;
             state.PendingQuery = [];
-            state.PagesBeforeNavigation = GetPages(shell);
         }
     }
 
@@ -175,7 +178,38 @@ public sealed class ShellLifecycleCoordinator
             await EnsureCurrentPageActivatedAsync(shell);
     }
 
-    private async Task ActivateAsync(ShellState state, Page page, INavigationParameters parameters)
+    /// <summary>
+    /// Shell drops the page of a ShellContent it created through the service container as soon as the app moves
+    /// to another Shell item, and it does so while handling this very event. The pages are swept right after, so
+    /// that a page Shell threw away is disposed instead of silently outliving its ViewModel and its scope.
+    /// </summary>
+    private void OnTrackedPageUnloaded(object sender, EventArgs e)
+    {
+        if (sender is not Page page)
+            return;
+
+        var dispatcher = page.Dispatcher;
+
+        if (dispatcher is null)
+            SweepEveryShell();
+        else
+            dispatcher.Dispatch(SweepEveryShell);
+    }
+
+    private void SweepEveryShell()
+    {
+        try
+        {
+            foreach (var pair in _states)
+                DestroyDisconnectedPages(pair.Key, pair.Value);
+        }
+        catch (Exception ex)
+        {
+            _logger?.LogError(ex, "Naveasy could not dispose the pages Shell has disconnected.");
+        }
+    }
+
+    private async Task ActivateAsync(MauiShell shell, ShellState state, Page page, INavigationParameters parameters)
     {
         if (page is null || ReferenceEquals(state.ActivatedPage, page))
             return;
@@ -184,6 +218,7 @@ public sealed class ShellLifecycleCoordinator
         state.ActivatedPage = page;
 
         _pageFactory.EnsureViewModelAttached(page);
+        Track(state, page);
 
         foreach (var target in GetLifecycleTargets(page))
         {
@@ -195,6 +230,58 @@ public sealed class ShellLifecycleCoordinator
 
             LifecycleInvoker.OnNavigatedTo(target, parameters);
         }
+    }
+
+    /// <summary>
+    /// Remembers a page so that it can be disposed once Shell stops holding it.
+    /// </summary>
+    private void Track(ShellState state, Page page)
+    {
+        if (state.TrackedPages.Contains(page))
+            return;
+
+        state.TrackedPages.Add(page);
+        page.Unloaded += OnTrackedPageUnloaded;
+    }
+
+    /// <summary>
+    /// Disposes every page Naveasy activated that Shell no longer holds: a page popped from a navigation stack,
+    /// a modal page that was closed, and the page of a ShellContent that Shell disconnected.
+    /// </summary>
+    private void DestroyDisconnectedPages(MauiShell shell, ShellState state)
+    {
+        if (state.TrackedPages.Count == 0)
+            return;
+
+        var alivePages = GetAlivePages(shell);
+
+        for (var index = state.TrackedPages.Count - 1; index >= 0; index--)
+        {
+            var page = state.TrackedPages[index];
+
+            if (alivePages.Contains(page))
+                continue;
+
+            state.TrackedPages.RemoveAt(index);
+            page.Unloaded -= OnTrackedPageUnloaded;
+
+            if (ReferenceEquals(state.ActivatedPage, page))
+                state.ActivatedPage = null;
+
+            DestroyPageTree(page);
+        }
+    }
+
+    private static void DestroyPageTree(Page page)
+    {
+        // The children of a TabbedPage have a ViewModel and a scope of their own.
+        if (page is TabbedPage tabbedPage)
+        {
+            foreach (var child in tabbedPage.Children.Reverse())
+                DestroyPageTree(child);
+        }
+
+        LifecycleInvoker.DestroyPage(page);
     }
 
     private static void InvokeOnNavigatedFrom(Page page, INavigationParameters parameters)
@@ -219,46 +306,50 @@ public sealed class ShellLifecycleCoordinator
         return canNavigate;
     }
 
-    private static void DestroyRemovedPages(MauiShell shell, ShellState state, Page currentPage)
-    {
-        var remainingPages = GetPages(shell);
-
-        // A page can show up more than once in the snapshot - Shell does not always move a modal page out of
-        // NavigationStack (dotnet/maui#12162) - and it must never be destroyed twice.
-        foreach (var page in state.PagesBeforeNavigation.Distinct())
-        {
-            if (ReferenceEquals(page, currentPage) || remainingPages.Contains(page))
-                continue;
-
-            LifecycleInvoker.DestroyPage(page);
-        }
-    }
-
     /// <summary>
-    /// Every page that is alive anywhere on the Shell. Shell.Navigation only exposes the stack of the section the
-    /// app is on, so the stack of every other section is read as well: switching tabs must not destroy the pages
-    /// of the section left behind, but an absolute navigation that empties that stack must. The first item of
-    /// NavigationStack is always null (dotnet/maui#12162) and modal pages may live in either stack, so both are
-    /// read and nulls are discarded.
+    /// Every page Shell is still holding.
     /// </summary>
-    private static List<Page> GetPages(MauiShell shell)
+    /// <remarks>
+    /// Shell.Navigation only exposes the stack of the section the app is on, so every section is read instead:
+    /// switching tabs must not dispose the pages of the section left behind. The root page of a ShellContent is
+    /// never on a stack - the first item of a stack is always null (dotnet/maui#12162) and the page itself is
+    /// cached by the ShellContent - so it is read from the ShellContent, which is also how a page Shell
+    /// disconnected becomes visible to Naveasy.
+    /// </remarks>
+    private static HashSet<Page> GetAlivePages(MauiShell shell)
     {
-        var pages = new List<Page>();
-        var navigation = shell.Navigation;
+        var pages = new HashSet<Page>();
 
-        if (navigation is not null)
-        {
-            pages.AddRange(navigation.NavigationStack.Where(page => page is not null));
-            pages.AddRange(navigation.ModalStack.Where(page => page is not null));
-        }
+        AddPages(pages, shell.Navigation?.NavigationStack);
+        AddPages(pages, shell.Navigation?.ModalStack);
 
         foreach (var item in shell.Items)
         {
             foreach (var section in item.Items)
-                pages.AddRange(section.Stack.Where(page => page is not null));
+            {
+                AddPages(pages, section.Stack);
+
+                foreach (var content in section.Items)
+                {
+                    if (((IShellContentController)content).Page is { } contentPage)
+                        pages.Add(contentPage);
+                }
+            }
         }
 
         return pages;
+    }
+
+    private static void AddPages(HashSet<Page> pages, IEnumerable<Page> source)
+    {
+        if (source is null)
+            return;
+
+        foreach (var page in source)
+        {
+            if (page is not null)
+                pages.Add(page);
+        }
     }
 
     /// <summary>
@@ -318,7 +409,7 @@ public sealed class ShellLifecycleCoordinator
 
     private sealed class ShellState
     {
-        public List<Page> PagesBeforeNavigation { get; set; } = [];
+        public List<Page> TrackedPages { get; } = [];
 
         public IReadOnlyList<KeyValuePair<string, object>> PendingQuery { get; set; } = [];
 

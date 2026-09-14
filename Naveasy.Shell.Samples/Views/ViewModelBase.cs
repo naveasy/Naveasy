@@ -17,12 +17,12 @@ public class ViewModelBase : BindableBase, IInitialize, IInitializeAsync, INavig
 
     public virtual void OnInitialize(INavigationParameters parameters)
     {
-        Logger.LogDebug("Initialize {Title} ({NavigationMode})", Title, parameters.GetNavigationMode());
+        //Logger.LogDebug("Initialize {Title} ({NavigationMode})", Title, parameters.GetNavigationMode());
     }
 
     public virtual Task OnInitializeAsync(INavigationParameters parameters)
     {
-        Logger.LogInformation("InitializeAsync {Title}", Title);
+        Logger.LogDebug("InitializeAsync {Title} ({NavigationMode})", Title, parameters.GetNavigationMode());
 
         return Task.CompletedTask;
     }
