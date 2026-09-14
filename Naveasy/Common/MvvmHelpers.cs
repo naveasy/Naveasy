@@ -55,60 +55,34 @@ public static class MvvmHelpers
 	}
 	
 	public static void InvokeViewAndViewModelAction<T>(object view, Action<T> action) where T : class
-	{
-		if (view is T viewAsT)
-		{
-			action(viewAsT);
-		}
+		=> LifecycleInvoker.InvokeViewAndViewModelAction(view, action);
 
-		if (view is BindableObject {BindingContext: T viewModelAsT})
-		{
-			action(viewModelAsT);
-		}
-	}
-
-	public static async Task InvokeViewAndViewModelActionAsync<T>(object view, Func<T, Task> action) where T : class
-	{
-		if (view is T viewAsT)
-		{
-			await action(viewAsT);
-		}
-
-		if (view is BindableObject {BindingContext: T viewModelAsT})
-		{
-			await action(viewModelAsT);
-		}
-	}
+	public static Task InvokeViewAndViewModelActionAsync<T>(object view, Func<T, Task> action) where T : class
+		=> LifecycleInvoker.InvokeViewAndViewModelActionAsync(view, action);
 	
 	public static void OnNavigatedFrom(object page, INavigationParameters parameters)
-	{
-		if (page != null)
-			InvokeViewAndViewModelAction<INavigatedAware>(page, v => v.OnNavigatedFrom(parameters));
-	}
+		=> LifecycleInvoker.OnNavigatedFrom(page, parameters);
 	
 	public static async Task OnNavigatedTo(object page, INavigationParameters parameters)
 	{
         if (page != null)
         {
-            InvokeViewAndViewModelAction<INavigatedAware>(page, v => v.OnNavigatedTo(parameters));
+            LifecycleInvoker.OnNavigatedTo(page, parameters);
             await Task.Delay(TimeSpan.FromMilliseconds(150));
         }
 	}
 	
-	public static async Task OnInitializeAsync(object page, INavigationParameters parameters)
-	{
-		if (page is null) return;
-
-		InvokeViewAndViewModelAction<IInitialize>(page, v => v.OnInitialize(parameters));
-		await InvokeViewAndViewModelActionAsync<IInitializeAsync>(page, async v => await v.OnInitializeAsync(parameters));
-	}
+	public static Task OnInitializeAsync(object page, INavigationParameters parameters)
+		=> LifecycleInvoker.OnInitializeAsync(page, parameters);
 
     public static async Task OnInitializedAsync(object page, INavigationParameters parameters)
     {
         if (page is null) return;
         await Task.Delay(TimeSpan.FromMilliseconds(150));
+#pragma warning disable CS0618 // The deprecated hooks are kept alive for backwards compatibility.
         InvokeViewAndViewModelAction<IInitialized>(page, v => v.OnInitialized(parameters));
         await InvokeViewAndViewModelActionAsync<IInitializedAsync>(page, async v => await v.OnInitializedAsync(parameters));
+#pragma warning restore CS0618
     }
 	
 	public static async Task HandleSystemGoBack(IView previousPage, IView currentPage)

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="Naveasy.Shell.Samples.Views.Orders.CustomerPage"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:orders="clr-namespace:Naveasy.Shell.Samples.Views.Orders"
+             x:DataType="orders:CustomerPageViewModel"
+             Title="{Binding Title}">
+    <VerticalStackLayout Padding="30,20"
+                         Spacing="15">
+        <Label Text="{Binding Customer}"
+               Style="{StaticResource Headline}" />
+
+        <Label Text="This page and its ViewModel are scoped: the scope is disposed when the page is popped." />
+
+        <Button Text="Go back"
+                Command="{Binding GoBackCommand}" />
+
+        <Button Text="Go back to the root"
+                Command="{Binding GoBackToRootCommand}" />
+    </VerticalStackLayout>
+</ContentPage>

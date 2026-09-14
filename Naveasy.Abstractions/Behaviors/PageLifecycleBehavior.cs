@@ -20,11 +20,11 @@ public class PageLifecycleAwareBehavior : BehaviorBase<Page>
 
     private void OnAppearing(object sender, EventArgs e)
     {
-        MvvmHelpers.InvokeViewAndViewModelAction<IPageLifecycleAware>(AssociatedObject, aware => aware.OnAppearing());
+        LifecycleInvoker.InvokeViewAndViewModelAction<IPageLifecycleAware>(AssociatedObject, aware => aware.OnAppearing());
     }
 
     private void OnDisappearing(object sender, EventArgs e)
     {
-        MvvmHelpers.InvokeViewAndViewModelAction<IPageLifecycleAware>(AssociatedObject, aware => aware.OnDisappearing());
+        LifecycleInvoker.InvokeViewAndViewModelAction<IPageLifecycleAware>(AssociatedObject, aware => aware.OnDisappearing());
     }
 }

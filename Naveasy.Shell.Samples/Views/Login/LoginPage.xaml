@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage x:Class="Naveasy.Shell.Samples.Views.Login.LoginPage"
+             x:DataType="login:LoginPageViewModel"
+             xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:login="clr-namespace:Naveasy.Shell.Samples.Views.Login"
+             Title="{Binding Title}"
+             Shell.FlyoutBehavior="Disabled"
+             Shell.NavBarIsVisible="False">
+    <VerticalStackLayout VerticalOptions="Center"
+                         Spacing="25"
+                         Padding="30">
+        <Label Text="Naveasy.Shell"
+               HorizontalOptions="Center"
+               Style="{StaticResource Headline}" />
+
+        <Label Text="ViewModel to ViewModel navigation on top of MAUI Shell"
+               HorizontalTextAlignment="Center" />
+
+        <Button Text="Sign in"
+                Command="{Binding SignInCommand}" />
+    </VerticalStackLayout>
+</ContentPage>
