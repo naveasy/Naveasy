@@ -33,195 +33,54 @@ jobs:
         configFilePath: 'GitVersion.yml'
 
   build-abstractions:
-    runs-on: windows-latest
     needs: git-version
     permissions:
       id-token: write  # enable GitHub OIDC token issuance for this job
-    env:
+    uses: ./.github/workflows/Deploy.yml
+    secrets: inherit
+    with:
+      project: Naveasy.Abstractions/Naveasy.Abstractions.csproj
       SemVer: ${{ needs.git-version.outputs.SemVer }}
       AssemblySemVer: ${{ needs.git-version.outputs.AssemblySemVer }}
       InformationalVersion: ${{ needs.git-version.outputs.InformationalVersion }}
       NuGetVersion: ${{ needs.git-version.outputs.NuGetVersion }}
-
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-tags: 'true'
-        fetch-depth: 0
-
-    - name: Display version
-      run: |
-        echo SemVer: ${{ env.SemVer }}
-        echo AssemblySemVer: ${{ env.AssemblySemVer }}
-        echo InformationalVersion: ${{ env.InformationalVersion }}
-        echo NuGetVersion: ${{ env.NuGetVersion }}
-
-    - name: Install .NET 10
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 10.0.x
-
-    - name: Install MAUI
-      run: dotnet workload install maui --source https://api.nuget.org/v3/index.json
-
-    ## Build for Abstractions
-    - name: Build
-      run: dotnet build ${{ github.workspace }}\Naveasy.Abstractions\Naveasy.Abstractions.csproj --configuration Release /p:Version=${{ env.SemVer }} /p:AssemblyVersion=${{ env.AssemblySemVer }} /p:InformationalVersion=${{ env.InformationalVersion }}
-
-    - name: Pack
-      run: dotnet pack ${{ github.workspace }}\Naveasy.Abstractions\Naveasy.Abstractions.csproj --configuration release --no-build --output packages.abstractions /p:PackageVersion=${{ env.NuGetVersion }}
-
-    # Get a short-lived NuGet API key
-    - name: NuGet login (OIDC → temp API key)
-      uses: NuGet/login@v1
-      id: login
-      with:
-        user: ${{ secrets.NUGET_ORG_USER_NAME }} # Your nuget.org username (profile name), NOT your email address
-
-    - name: Push
-      run: dotnet nuget push ${{ github.workspace }}\packages.abstractions\Naveasy.Abstractions.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{steps.login.outputs.NUGET_API_KEY}}
 
   build-maui:
-    runs-on: windows-latest
     needs: [git-version, build-abstractions]
     permissions:
-      id-token: write  # enable GitHub OIDC token issuance for this job
-    env:
+      id-token: write
+    uses: ./.github/workflows/Deploy.yml
+    secrets: inherit
+    with:
+      project: Naveasy/Naveasy.csproj
       SemVer: ${{ needs.git-version.outputs.SemVer }}
       AssemblySemVer: ${{ needs.git-version.outputs.AssemblySemVer }}
       InformationalVersion: ${{ needs.git-version.outputs.InformationalVersion }}
       NuGetVersion: ${{ needs.git-version.outputs.NuGetVersion }}
-
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-tags: 'true'
-        fetch-depth: 0
-
-    - name: Display version
-      run: |
-        echo SemVer: ${{ env.SemVer }}
-        echo AssemblySemVer: ${{ env.AssemblySemVer }}
-        echo InformationalVersion: ${{ env.InformationalVersion }}
-        echo NuGetVersion: ${{ env.NuGetVersion }}
-
-    - name: Install .NET 10
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 10.0.x
-
-    - name: Install MAUI
-      run: dotnet workload install maui --source https://api.nuget.org/v3/index.json
-
-    ## Build for MAUI
-    - name: Build
-      run: dotnet build ${{ github.workspace }}\Naveasy\Naveasy.csproj --configuration Release /p:Version=${{ env.SemVer }} /p:AssemblyVersion=${{ env.AssemblySemVer }} /p:InformationalVersion=${{ env.InformationalVersion }}
-      
-    - name: Pack
-      run: dotnet pack ${{ github.workspace }}\Naveasy\Naveasy.csproj --configuration release --no-build --output packages /p:PackageVersion=${{ env.NuGetVersion }}
-
-    # Get a short-lived NuGet API key
-    - name: NuGet login (OIDC → temp API key)
-      uses: NuGet/login@v1
-      id: login
-      with:
-        user: ${{ secrets.NUGET_ORG_USER_NAME }} # Your nuget.org username (profile name), NOT your email address
-      
-    - name: Push
-      run: dotnet nuget push ${{ github.workspace }}\packages\Naveasy.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{steps.login.outputs.NUGET_API_KEY}}
-
-  build-wpf:
-    runs-on: windows-latest
-    needs: git-version
-    permissions:
-      id-token: write  # enable GitHub OIDC token issuance for this job
-    env:
-      SemVer: ${{ needs.git-version.outputs.SemVer }}
-      AssemblySemVer: ${{ needs.git-version.outputs.AssemblySemVer }}
-      InformationalVersion: ${{ needs.git-version.outputs.InformationalVersion }}
-      NuGetVersion: ${{ needs.git-version.outputs.NuGetVersion }}
-
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-tags: 'true'
-        fetch-depth: 0
-
-    - name: Display version
-      run: |
-        echo SemVer: ${{ env.SemVer }}
-        echo AssemblySemVer: ${{ env.AssemblySemVer }}
-        echo InformationalVersion: ${{ env.InformationalVersion }}
-        echo NuGetVersion: ${{ env.NuGetVersion }}
-
-    - name: Install .NET 10
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 10.0.x
-
-    ## Build for WPF
-    - name: Build
-      run: dotnet build ${{ github.workspace }}\Naveasy.WPF\Naveasy.WPF.csproj --configuration Release /p:Version=${{ env.SemVer }} /p:AssemblyVersion=${{ env.AssemblySemVer }} /p:InformationalVersion=${{ env.InformationalVersion }}
-      
-    - name: Pack
-      run: dotnet pack ${{ github.workspace }}\Naveasy.WPF\Naveasy.WPF.csproj --configuration release --no-build --output packages.wpf /p:PackageVersion=${{ env.NuGetVersion }}
-
-    # Get a short-lived NuGet API key
-    - name: NuGet login (OIDC → temp API key)
-      uses: NuGet/login@v1
-      id: login
-      with:
-        user: ${{ secrets.NUGET_ORG_USER_NAME }} # Your nuget.org username (profile name), NOT your email address
-      
-    - name: Push
-      ##if: github.ref == 'refs/heads/main'
-      run: dotnet nuget push ${{ github.workspace }}\packages.wpf\Naveasy.WPF.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{steps.login.outputs.NUGET_API_KEY}}
 
   build-shell:
-    runs-on: windows-latest
     needs: [git-version, build-abstractions]
     permissions:
-      id-token: write  # enable GitHub OIDC token issuance for this job
-    env:
+      id-token: write
+    uses: ./.github/workflows/Deploy.yml
+    secrets: inherit
+    with:
+      project: Naveasy.Shell/Naveasy.Shell.csproj
       SemVer: ${{ needs.git-version.outputs.SemVer }}
       AssemblySemVer: ${{ needs.git-version.outputs.AssemblySemVer }}
       InformationalVersion: ${{ needs.git-version.outputs.InformationalVersion }}
       NuGetVersion: ${{ needs.git-version.outputs.NuGetVersion }}
 
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-tags: 'true'
-        fetch-depth: 0
-
-    - name: Display version
-      run: |
-        echo SemVer: ${{ env.SemVer }}
-        echo AssemblySemVer: ${{ env.AssemblySemVer }}
-        echo InformationalVersion: ${{ env.InformationalVersion }}
-        echo NuGetVersion: ${{ env.NuGetVersion }}
-
-    - name: Install .NET 10
-      uses: actions/setup-dotnet@v4
-      with:
-        dotnet-version: 10.0.x
-
-    - name: Install MAUI
-      run: dotnet workload install maui --source https://api.nuget.org/v3/index.json
-
-    ## Build for Shell
-    - name: Build
-      run: dotnet build ${{ github.workspace }}\Naveasy.Shell\Naveasy.Shell.csproj --configuration Release /p:Version=${{ env.SemVer }} /p:AssemblyVersion=${{ env.AssemblySemVer }} /p:InformationalVersion=${{ env.InformationalVersion }}
-
-    - name: Pack
-      run: dotnet pack ${{ github.workspace }}\Naveasy.Shell\Naveasy.Shell.csproj --configuration release --no-build --output packages.shell /p:PackageVersion=${{ env.NuGetVersion }}
-
-    # Get a short-lived NuGet API key
-    - name: NuGet login (OIDC → temp API key)
-      uses: NuGet/login@v1
-      id: login
-      with:
-        user: ${{ secrets.NUGET_ORG_USER_NAME }} # Your nuget.org username (profile name), NOT your email address
-
-    - name: Push
-      run: dotnet nuget push ${{ github.workspace }}\packages.shell\Naveasy.Shell.*.nupkg --source https://api.nuget.org/v3/index.json --api-key ${{steps.login.outputs.NUGET_API_KEY}}
+  build-wpf:
+    needs: git-version
+    permissions:
+      id-token: write
+    uses: ./.github/workflows/Deploy.yml
+    secrets: inherit
+    with:
+      project: Naveasy.WPF/Naveasy.WPF.csproj
+      install-maui: false
+      SemVer: ${{ needs.git-version.outputs.SemVer }}
+      AssemblySemVer: ${{ needs.git-version.outputs.AssemblySemVer }}
+      InformationalVersion: ${{ needs.git-version.outputs.InformationalVersion }}
+      NuGetVersion: ${{ needs.git-version.outputs.NuGetVersion }}

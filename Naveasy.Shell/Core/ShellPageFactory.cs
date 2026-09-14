@@ -72,6 +72,11 @@ internal sealed class ShellPageFactory : IShellPageFactory
 
         if (page.BindingContext is not null && registration.ViewModelType.IsInstanceOfType(page.BindingContext))
         {
+            // The page may have been given its ViewModel outside of Naveasy - in XAML, for instance - and then
+            // no page lifetime scope owns either of them.
+            if (NavigationAttached.GetDisposalPolicy(page) is null)
+                NavigationAttached.SetDisposalPolicy(page, GetDisposalPolicy(registration, isViewModelOwnedByScope: false));
+
             page.ApplyBehaviors();
             return;
         }
@@ -83,6 +88,10 @@ internal sealed class ShellPageFactory : IShellPageFactory
             scope = _pageScopeService.BeginPageLifetimeScope();
             NavigationAttached.SetLifetimeScope(page, scope);
         }
+
+        // Shell - or XAML - created this page, so the scope that resolves the ViewModel knows nothing about the
+        // View itself and Naveasy has to dispose it when the page leaves the navigation stack.
+        NavigationAttached.SetDisposalPolicy(page, GetDisposalPolicy(registration, isViewModelOwnedByScope: true));
 
         try
         {
@@ -107,6 +116,10 @@ internal sealed class ShellPageFactory : IShellPageFactory
 
         page.BindingContext = viewModel;
         NavigationAttached.SetLifetimeScope(page, scope);
+
+        // Both came out of the page lifetime scope, which disposes what it created and leaves singletons alone.
+        NavigationAttached.SetDisposalPolicy(page, PageDisposalPolicy.None);
+
         page.ApplyBehaviors();
 
         if (page is TabbedPage tabbedPage)
@@ -116,6 +129,23 @@ internal sealed class ShellPageFactory : IShellPageFactory
         }
 
         return page;
+    }
+
+    /// <summary>
+    /// What Naveasy must dispose on a page it did not fully create. A singleton is owned by the container for the
+    /// whole life of the app and is therefore left out.
+    /// </summary>
+    private static PageDisposalPolicy GetDisposalPolicy(ShellRouteRegistration registration, bool isViewModelOwnedByScope)
+    {
+        var policy = PageDisposalPolicy.None;
+
+        if (registration.ViewLifetime != ServiceLifetime.Singleton)
+            policy |= PageDisposalPolicy.View;
+
+        if (!isViewModelOwnedByScope && registration.ViewModelLifetime != ServiceLifetime.Singleton)
+            policy |= PageDisposalPolicy.ViewModel;
+
+        return policy;
     }
 
     private void ApplyPendingPresentationMode(Page page)

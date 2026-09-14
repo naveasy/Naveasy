@@ -73,12 +73,13 @@ public static class LifecycleInvoker
     }
 
     /// <summary>
-    /// Disposes the View and the ViewModel, releases the page lifetime scope and detaches the page from its BindingContext.
+    /// Disposes the View, the ViewModel and the hosted pages of <paramref name="view"/>, releases the page
+    /// lifetime scope and detaches the page from its BindingContext.
     /// </summary>
     /// <remarks>
-    /// When the page has a Naveasy lifetime scope, the scope is what disposes the View and the ViewModel: the
-    /// service container already tracks every IDisposable it created, transient ones included, and disposing them
-    /// here as well would call Dispose twice.
+    /// Whatever the page lifetime scope created is disposed by the scope, which is also how a singleton survives:
+    /// the container only disposes the instances it owns, and a singleton belongs to the root provider. Anything
+    /// created outside of the scope is disposed here, as told by <see cref="NavigationAttached.GetDisposalPolicy"/>.
     /// </remarks>
     public static void DestroyPage(IView view)
     {
@@ -86,15 +87,26 @@ public static class LifecycleInvoker
 
         try
         {
+            DestroyHostedPages(view);
+
             var page = view as Page;
             var scope = page is not null ? NavigationAttached.GetLifetimeScope(page) : null;
 
-            if (scope is null)
-                InvokeViewAndViewModelAction<IDisposable>(view, v => v.Dispose());
+            // A page Naveasy never created has no policy, and then nothing else owns its View and its ViewModel.
+            var policy = (page is not null ? NavigationAttached.GetDisposalPolicy(page) : null)
+                         ?? (scope is null ? PageDisposalPolicy.ViewAndViewModel : PageDisposalPolicy.None);
+
+            if (policy.HasFlag(PageDisposalPolicy.View) && view is IDisposable disposableView)
+                disposableView.Dispose();
+
+            if (policy.HasFlag(PageDisposalPolicy.ViewModel) && view is BindableObject { BindingContext: IDisposable disposableViewModel })
+                disposableViewModel.Dispose();
 
             if (page is null)
                 return;
 
+            // Destroying the same page twice must be harmless: the scope is gone and nothing is left to dispose.
+            NavigationAttached.SetDisposalPolicy(page, PageDisposalPolicy.None);
             NavigationAttached.ClearLifetimeScope(page);
             scope?.Dispose();
 
@@ -104,6 +116,32 @@ public static class LifecycleInvoker
         catch (Exception ex)
         {
             throw new Exception($"Cannot destroy {view}.", ex);
+        }
+    }
+
+    /// <summary>
+    /// Destroys the pages hosted by <paramref name="view"/>. The children of a TabbedPage, the two halves of a
+    /// FlyoutPage and the stack of a NavigationPage leave the navigation together with their host, and each of
+    /// them has its own ViewModel and its own page lifetime scope.
+    /// </summary>
+    private static void DestroyHostedPages(IView view)
+    {
+        switch (view)
+        {
+            case FlyoutPage flyoutPage:
+                DestroyPage(flyoutPage.Flyout);
+                DestroyPage(flyoutPage.Detail);
+                break;
+
+            case TabbedPage tabbedPage:
+                foreach (var child in tabbedPage.Children.Reverse())
+                    DestroyPage(child);
+                break;
+
+            case NavigationPage navigationPage:
+                foreach (var child in navigationPage.Navigation.NavigationStack.Reverse())
+                    DestroyPage(child);
+                break;
         }
     }
 }

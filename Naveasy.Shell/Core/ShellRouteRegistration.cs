@@ -44,6 +44,16 @@ public sealed class ShellRouteRegistration
     public ShellRouteKind Kind { get; }
 
     /// <summary>
+    /// The lifetime <see cref="ViewType"/> is registered with. A singleton View is never disposed by Naveasy.
+    /// </summary>
+    public ServiceLifetime ViewLifetime { get; internal set; } = ServiceLifetime.Transient;
+
+    /// <summary>
+    /// The lifetime <see cref="ViewModelType"/> is registered with. A singleton ViewModel is never disposed by Naveasy.
+    /// </summary>
+    public ServiceLifetime ViewModelLifetime { get; internal set; } = ServiceLifetime.Transient;
+
+    /// <summary>
     /// <c>false</c> for pages hosted by another page, which have no route of their own.
     /// </summary>
     public bool IsRoutable => Kind is not ShellRouteKind.Child;

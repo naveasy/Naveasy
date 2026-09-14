@@ -93,7 +93,6 @@ public sealed class ShellLifecycleCoordinator
 
         var state = _states.GetOrCreateValue(shell);
         state.PagesBeforeNavigation = GetPages(shell);
-        state.SectionBeforeNavigation = GetSection(shell);
         state.NavigatingFrom = shell.CurrentPage;
 
         // Only the target state of this event carries the query string of a deep link.
@@ -156,10 +155,7 @@ public sealed class ShellLifecycleCoordinator
 
             await ActivateAsync(state, currentPage, parameters);
 
-            // Pages are only destroyed while staying on the same Shell section. Switching tabs or flyout items
-            // swaps the whole navigation stack, and the pages of the section left behind are still alive.
-            if (ReferenceEquals(state.SectionBeforeNavigation, GetSection(shell)))
-                DestroyRemovedPages(shell, state, currentPage);
+            DestroyRemovedPages(shell, state, currentPage);
         }
         catch (Exception ex)
         {
@@ -170,7 +166,6 @@ public sealed class ShellLifecycleCoordinator
             state.NavigatingFrom = null;
             state.PendingQuery = [];
             state.PagesBeforeNavigation = GetPages(shell);
-            state.SectionBeforeNavigation = GetSection(shell);
         }
     }
 
@@ -240,19 +235,28 @@ public sealed class ShellLifecycleCoordinator
     }
 
     /// <summary>
-    /// The pages that are alive on the current Shell section. The first item of NavigationStack is always null
-    /// (dotnet/maui#12162) and modal pages may live in either stack, so both are read and nulls are discarded.
+    /// Every page that is alive anywhere on the Shell. Shell.Navigation only exposes the stack of the section the
+    /// app is on, so the stack of every other section is read as well: switching tabs must not destroy the pages
+    /// of the section left behind, but an absolute navigation that empties that stack must. The first item of
+    /// NavigationStack is always null (dotnet/maui#12162) and modal pages may live in either stack, so both are
+    /// read and nulls are discarded.
     /// </summary>
     private static List<Page> GetPages(MauiShell shell)
     {
         var pages = new List<Page>();
         var navigation = shell.Navigation;
 
-        if (navigation is null)
-            return pages;
+        if (navigation is not null)
+        {
+            pages.AddRange(navigation.NavigationStack.Where(page => page is not null));
+            pages.AddRange(navigation.ModalStack.Where(page => page is not null));
+        }
 
-        pages.AddRange(navigation.NavigationStack.Where(page => page is not null));
-        pages.AddRange(navigation.ModalStack.Where(page => page is not null));
+        foreach (var item in shell.Items)
+        {
+            foreach (var section in item.Items)
+                pages.AddRange(section.Stack.Where(page => page is not null));
+        }
 
         return pages;
     }
@@ -273,12 +277,6 @@ public sealed class ShellLifecycleCoordinator
 
     private static bool IsBack(ShellNavigationSource source) =>
         source is ShellNavigationSource.Pop or ShellNavigationSource.PopToRoot;
-
-    /// <summary>
-    /// The Shell section - a tab or a flyout item - the app is currently on. Every section owns its own
-    /// navigation stack.
-    /// </summary>
-    private static ShellSection GetSection(MauiShell shell) => shell.CurrentItem?.CurrentItem;
 
     private static INavigationParameters CopyWithMode(INavigationParameters parameters, NavigationMode mode)
     {
@@ -321,8 +319,6 @@ public sealed class ShellLifecycleCoordinator
     private sealed class ShellState
     {
         public List<Page> PagesBeforeNavigation { get; set; } = [];
-
-        public ShellSection SectionBeforeNavigation { get; set; }
 
         public IReadOnlyList<KeyValuePair<string, object>> PendingQuery { get; set; } = [];
 

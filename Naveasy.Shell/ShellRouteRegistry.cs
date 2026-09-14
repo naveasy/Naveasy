@@ -27,6 +27,7 @@ public static class ShellRouteRegistry
 
         self.TryAddService(typeof(TView), ServiceLifetime.Transient);
         self.TryAddService(typeof(TViewModel), ServiceLifetime.Transient);
+        self.CaptureLifetimes(registration);
 
         RegisterRoute(registration);
 
@@ -45,6 +46,7 @@ public static class ShellRouteRegistry
 
         self.TryAddService(viewType, ServiceLifetime.Transient);
         self.TryAddService(typeof(TViewModel), ServiceLifetime.Transient);
+        self.CaptureLifetimes(registration);
 
         RegisterRoute(registration);
 
@@ -63,6 +65,7 @@ public static class ShellRouteRegistry
 
         self.TryAddService(typeof(TView), ServiceLifetime.Scoped);
         self.TryAddService(typeof(TViewModel), ServiceLifetime.Scoped);
+        self.CaptureLifetimes(registration);
 
         RegisterRoute(registration);
 
@@ -87,10 +90,11 @@ public static class ShellRouteRegistry
         if (self.Any(descriptor => descriptor.ServiceType == typeof(TView) && descriptor.Lifetime == ServiceLifetime.Scoped))
             throw new ArgumentException(ShellErrorMessages.ScopedShellContent(typeof(TView)));
 
-        Register(typeof(TViewModel), typeof(TView), route, ShellRouteKind.ShellContent);
+        var registration = Register(typeof(TViewModel), typeof(TView), route, ShellRouteKind.ShellContent);
 
         self.TryAddService(typeof(TView), ServiceLifetime.Transient);
         self.TryAddService(typeof(TViewModel), ServiceLifetime.Transient);
+        self.CaptureLifetimes(registration);
 
         return self;
     }
@@ -104,10 +108,11 @@ public static class ShellRouteRegistry
         where TView : Page
         where TViewModel : class
     {
-        Register(typeof(TViewModel), typeof(TView), typeof(TView).Name, ShellRouteKind.Child);
+        var registration = Register(typeof(TViewModel), typeof(TView), typeof(TView).Name, ShellRouteKind.Child);
 
         self.TryAddService(typeof(TView), ServiceLifetime.Transient);
         self.TryAddService(typeof(TViewModel), ServiceLifetime.Transient);
+        self.CaptureLifetimes(registration);
 
         return self;
     }
@@ -206,4 +211,17 @@ public static class ShellRouteRegistry
 
         self.Add(new ServiceDescriptor(serviceType, serviceType, lifetime));
     }
+
+    /// <summary>
+    /// Reads back the lifetime the View and the ViewModel ended up registered with: the app may have registered
+    /// either of them before Naveasy, and a singleton must never be disposed when a page leaves the navigation.
+    /// </summary>
+    private static void CaptureLifetimes(this IServiceCollection self, ShellRouteRegistration registration)
+    {
+        registration.ViewLifetime = self.GetLifetime(registration.ViewType);
+        registration.ViewModelLifetime = self.GetLifetime(registration.ViewModelType);
+    }
+
+    private static ServiceLifetime GetLifetime(this IServiceCollection self, Type serviceType) =>
+        self.LastOrDefault(descriptor => descriptor.ServiceType == serviceType)?.Lifetime ?? ServiceLifetime.Transient;
 }
