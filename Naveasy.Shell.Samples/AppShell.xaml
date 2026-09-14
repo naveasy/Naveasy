@@ -10,7 +10,7 @@
 
     <!-- The starting point of the app. It is hidden from the flyout and, because Naveasy resolves the
          ViewModel of every ShellContent, LoginPage gets its LoginPageViewModel and the Naveasy lifecycle. -->
-    <ShellContent Route="login"
+    <ShellContent Route="LoginPage"
                   FlyoutItemIsVisible="False"
                   ContentTemplate="{DataTemplate login:LoginPage}" />
 
@@ -20,7 +20,7 @@
 
         <Tab Title="Home"
              Route="home">
-            <ShellContent Route="homepage"
+            <ShellContent Route="HomePage"
                           ContentTemplate="{DataTemplate home:HomePage}" />
         </Tab>
 

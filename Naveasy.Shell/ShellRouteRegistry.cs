@@ -81,12 +81,14 @@ public static class ShellRouteRegistry
     /// The View is registered as transient because .NET MAUI resolves ShellContent pages from the root service
     /// provider. The ViewModel may still be scoped: Naveasy creates the page scope itself.
     /// </remarks>
-    public static IServiceCollection AddShellContentForNavigation<TView, TViewModel>(this IServiceCollection self, string route)
+    /// <param name="route">
+    /// The route of the ShellContent, exactly as declared in XAML. Defaults to the name of the View type, which
+    /// then has to be the value of its Route attribute.
+    /// </param>
+    public static IServiceCollection AddShellContentForNavigation<TView, TViewModel>(this IServiceCollection self, string route = null)
         where TView : Page
         where TViewModel : class
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(route);
-
         if (self.Any(descriptor => descriptor.ServiceType == typeof(TView) && descriptor.Lifetime == ServiceLifetime.Scoped))
             throw new ArgumentException(ShellErrorMessages.ScopedShellContent(typeof(TView)));
 
@@ -186,7 +188,8 @@ public static class ShellRouteRegistry
         if (!typeof(Page).IsAssignableFrom(viewType))
             throw new ArgumentException(ShellErrorMessages.ViewIsNotAPage(viewType, viewModelType));
 
-        route ??= viewType.Name;
+        if (string.IsNullOrWhiteSpace(route))
+            route = viewType.Name;
 
         var duplicatedRoute = RegistrationsByViewModel.Values.FirstOrDefault(x => x.Route == route);
 

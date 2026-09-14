@@ -20,10 +20,13 @@ public static class MauiProgram
             });
 
         builder.Services
-            // Pages declared as a ShellContent in AppShell.xaml: the route is the one used in the XAML and
-            // Shell owns the page creation, so only the mapping is registered here.
-            .AddShellContentForNavigation<LoginPage, LoginPageViewModel>("login")
-            .AddShellContentForNavigation<HomePage, HomePageViewModel>("homepage")
+            // Pages declared as a ShellContent in AppShell.xaml: Shell owns the page creation, so only the
+            // mapping is registered here. When no explicit route is declared, the name of the Page/View is used
+            // as the route by default, which is why the Route attribute of those ShellContent is LoginPage and
+            // HomePage.
+            .AddShellContentForNavigation<LoginPage, LoginPageViewModel>()
+            .AddShellContentForNavigation<HomePage, HomePageViewModel>()
+            // An explicit route is only needed when the Route attribute in the XAML differs from the View name.
             .AddShellContentForNavigation<OrdersPage, OrdersPageViewModel>("orderspage")
             // Pages reached by pushing a route. The route defaults to the name of the View.
             .AddTransientForNavigation<OrderDetailPage, OrderDetailPageViewModel>()
